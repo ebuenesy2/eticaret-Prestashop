@@ -136,7 +136,7 @@
 													@foreach ($categoryData as $category)
 													<div class="filter-item">
 														<div class="custom-control custom-checkbox">
-															<li><a href="?category={{ $category['id'] }}">{{ htmlspecialchars($category['name']) }}</a></li>
+															<li><a href="?category={{ $category['id'] }}&pageCategory={{$currentPageCategory}}">{{ htmlspecialchars($category['name']) }}</a></li>
 														</div><!-- End .custom-checkbox -->
 													</div><!-- End .filter-item -->
 													@endforeach
