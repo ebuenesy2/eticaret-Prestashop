@@ -47,13 +47,50 @@ class Web extends Controller
         try {  
 
            
-        
-            
+            $url = "https://marwella1.eldenpazar.com/api/categories";
+            $username = "VIMPBUIW3AW519AMKSIY6SRRZUG7YG4E";  // Prestashop API Key
 
-            //! Return
-            $DB["title"] =  "title";
-              
-            return view('web/test',$DB);
+            $response = Http::withBasicAuth($username, '')->accept('application/xml')->get($url);
+
+            if ($response->successful()) {
+                // XML verisini ayrıştır
+                $xml = simplexml_load_string($response->body());
+
+                // Kategori ID’lerini al
+                $categories = [];
+                foreach ($xml->categories->category as $category) {
+                    $categories[] = (string) $category['id'];
+                }
+
+                // Sayfalama için parametreler
+                $perPage = 10; // Her sayfada 10 kategori
+                $currentPage = (int) $request->query('page', 1);
+                $offset = ($currentPage - 1) * $perPage;
+                $pagedCategories = array_slice($categories, $offset, $perPage);
+
+                // Kategori adlarını al
+                $categoryData = [];
+                foreach ($pagedCategories as $categoryId) {
+                    $detailUrl = "https://marwella1.eldenpazar.com/api/categories/{$categoryId}";
+                    $detailResponse = Http::withBasicAuth($username, '')->accept('application/xml')->get($detailUrl);
+
+                    if ($detailResponse->successful()) {
+                        $detailXml = simplexml_load_string($detailResponse->body());
+                        $categoryName = (string) $detailXml->category->name->language;
+
+                        $categoryData[] = ['id' => $categoryId, 'name' => $categoryName];
+                    }
+                }
+
+                // Toplam sayfa sayısını hesapla
+                $totalCategories = count($categories);
+                $totalPages = ceil($totalCategories / $perPage);
+
+                return view('web/test', compact('categoryData', 'currentPage', 'totalPages'));
+            } else {
+                return response()->json(['error' => 'Kategoriler alınamadı!'], $response->status());
+            }
+            
         } 
         catch (\Throwable $th) {  throw $th; }
 
