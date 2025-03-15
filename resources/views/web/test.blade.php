@@ -1,19 +1,5 @@
-<title> @lang('admin.home') | {{ $DB_HomeSettings->title }} </title>
+
+
+<h1>test</h1>
+<p>{{$title}}</p>
   
-  <!------- Head --->
-  @include('web.include.head')
-
-
-  <h1>test</h1>
-
-  
-  
-  
-
-
-
-
-<!------- Footer --->
-@include('web.include.footer')
-
-
