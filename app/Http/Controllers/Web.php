@@ -734,7 +734,7 @@ class Web extends Controller
                     }
         
                     // Sayfalama için parametreler
-                    $perPage = 10; // Her sayfada 10 ürün
+                    $perPage = 20; // Her sayfada 10 ürün
                     $currentPage = (int) $request->query('page', 1);
                     $offset = ($currentPage - 1) * $perPage;
                     $pagedProducts = array_slice($products, $offset, $perPage);
@@ -749,15 +749,39 @@ class Web extends Controller
                             $detailXml = simplexml_load_string($detailResponse->body());
                             $productName = (string) $detailXml->product->name->language;
                             $imageId = (string) $detailXml->product->id_default_image;
-                            $imageUrl = $imageId ? "https://marwella1.eldenpazar.com/api/images/products/{$productId}/{$imageId}" : '';
+
+                            // Kategori bilgisini almak için kategori detayını sorgula
+                            $categoryUrl = "https://marwella1.eldenpazar.com/api/categories/{$categoryId}";
+                            $categoryResponse = Http::withBasicAuth($username, '')->accept('application/xml')->get($categoryUrl);
+
+
+                            // Kategori detaylarını aldıysak
+                            $categoryName = "";
+                            if ($categoryResponse->successful()) {
+                                $categoryXml = simplexml_load_string($categoryResponse->body());
+                                $categoryName = (string) $categoryXml->category->name->language;  // Kategori adını al
+                            }
+                           
+                            // Resim kontrolü: Eğer resim yoksa, ürünü ekleme
+                            if ($imageId) {
+                                $imageUrl = "https://marwella1.eldenpazar.com/api/images/products/{$productId}/{$imageId}";
+                                $productData[] = [
+                                    'id' => $productId,
+                                    'name' => $productName,
+                                    'image' => $imageUrl,
+                                    'category' => $categoryName 
+                                ];
+                            }
         
-                            $productData[] = ['id' => $productId, 'name' => $productName, 'image' => $imageUrl];
+                          
                         }
                     }
         
                     // Sayfa sayısını hesapla
                     $totalProducts = count($products);
                     $totalPages = ceil($totalProducts / $perPage);
+
+                    //echo "<pre>"; print_r($productData); die();
 
                     //! Return
                     $DB["productData"] =  $productData; //! Kategoriler

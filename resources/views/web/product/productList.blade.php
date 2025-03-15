@@ -76,6 +76,16 @@
                                                     <img src="{{ htmlspecialchars($product['image']) }}" style="width: 100%;height: 250px;object-fit: contain;" >
                                                 </a>
                                             </figure><!-- End .product-media -->
+											<div class="product-body">
+                                                <div class="product-cat">
+													<a href="/@lang('admin.lang')/product/category/1">Kategori Adı</a>
+                                                </div><!-- End .product-cat -->
+                                                <h3 class="product-title"><a href="/@lang('admin.lang')/product/view/1">Ad</a></h3><!-- End .product-title -->
+                                                <div style="display: flex;justify-content: center;" >
+                                                    <h4 class="new-price" style="color: green;font-size: 20px;font-weight: bold;" >10 TL</h4>
+                                                    <h4 class="old-price" style="font-size: 15px;font-weight: bold;" >15 TL</h4>
+                                                </div><!-- End .product-price -->
+                                            </div><!-- End .product-body -->
                                         </div><!-- End .product -->
                                     </div>
                                     @endforeach
