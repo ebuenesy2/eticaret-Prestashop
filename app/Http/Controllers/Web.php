@@ -515,7 +515,7 @@ class Web extends Controller
     } //! Ürün Kategorisi -Ürün Listesi Son
 
     //! Ürün Listesi - Tüm Ürünler
-    public function ProductListAll($site_lang="tr")
+    public function ProductListAll($site_lang="tr",Request $request)
     {
         \Illuminate\Support\Facades\App::setLocale($site_lang); //! Çoklu Dil
         //echo "Dil:"; echo $site_lang;  echo "<br/>"; die();
@@ -665,6 +665,59 @@ class Web extends Controller
                 $DB["DB_Products"] =  $DB_Products_List; //! Toplam Ürün Listesi
                 $DB["DB_Products_Count"] =  count($DB_Products_List); //! Gösterilen Ürün Sayısı
                 //! Ürünler Listesi Kontrol - Son
+
+
+                //! Curl
+                $url = "https://marwella1.eldenpazar.com/api/categories";
+                $username = "VIMPBUIW3AW519AMKSIY6SRRZUG7YG4E";  // Prestashop API Key
+    
+                $response = Http::withBasicAuth($username, '')->accept('application/xml')->get($url);
+    
+                if ($response->successful()) {
+                    // XML verisini ayrıştır
+                    $xml = simplexml_load_string($response->body());
+    
+                    // Kategori ID’lerini al
+                    $categories = [];
+                    foreach ($xml->categories->category as $category) {
+                        $categories[] = (string) $category['id'];
+                    }
+    
+                    // Sayfalama için parametreler
+                    $perPage = 10; // Her sayfada 10 kategori
+                    $currentPage = (int) $request->query('pageCategory', 1);
+                    $offset = ($currentPage - 1) * $perPage;
+                    $pagedCategories = array_slice($categories, $offset, $perPage);
+    
+                    // Kategori adlarını al
+                    $categoryData = [];
+                    foreach ($pagedCategories as $categoryId) {
+                        $detailUrl = "https://marwella1.eldenpazar.com/api/categories/{$categoryId}";
+                        $detailResponse = Http::withBasicAuth($username, '')->accept('application/xml')->get($detailUrl);
+    
+                        if ($detailResponse->successful()) {
+                            $detailXml = simplexml_load_string($detailResponse->body());
+                            $categoryName = (string) $detailXml->category->name->language;
+    
+                            $categoryData[] = ['id' => $categoryId, 'name' => $categoryName];
+                        }
+                    }
+    
+                    // Toplam sayfa sayısını hesapla
+                    $totalCategories = count($categories);
+                    $totalPages = ceil($totalCategories / $perPage);
+
+                    //! Return
+                    $DB["categoryData"] =  $categoryData; //! Kategoriler
+                    $DB["currentPage"] =  $currentPage; //! Şimdi Sayfa
+                    $DB["totalPages"] =  $totalPages; //! Tüm Sayfalar
+                    
+                } else {
+                    return response()->json(['error' => 'Kategoriler alınamadı!'], $response->status());
+                }
+
+                
+
 
                 return view('web/product/productList',$DB);
             } //! Web

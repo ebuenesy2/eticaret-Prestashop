@@ -160,21 +160,18 @@
 									<div class="collapse show" id="widget-1">
 										<div class="widget-body">
 											<div class="filter-items filter-items-count">
-
-												@for ($i = 0; $i < count($DB_product_categories); $i++)
-												<div class="filter-item">
-													<div class="custom-control custom-checkbox">
-														<input type="checkbox" class="custom-control-input" name="product_categories" id="{{$DB_product_categories[$i]->uid}}" value="{{$DB_product_categories[$i]->uid}}"  {{ in_array($DB_product_categories[$i]->uid, $dizi_categories) ? 'checked' : '' }} >
-														<label class="custom-control-label" for="{{$DB_product_categories[$i]->uid}}">{{$DB_product_categories[$i]->title}}</label>
-													</div><!-- End .custom-checkbox -->
-												</div><!-- End .filter-item -->
-												@endfor
-
+												<ul>
+													@foreach ($categoryData as $category)
+													<div class="filter-item">
+														<div class="custom-control custom-checkbox">
+															<li><a href="?category={{ $category['id'] }}">{{ htmlspecialchars($category['name']) }}</a></li>
+														</div><!-- End .custom-checkbox -->
+													</div><!-- End .filter-item -->
+													@endforeach
+												</ul>
 											</div><!-- End .filter-items -->
 											
-											<hr>
-											<button type="button" id="filtereleControl" data_url="?page=1&rowcount={{$rowcount}}&orderBy={{$orderBy}}&order={{$order}}" style="width: 100%;background-color: green;color: white;" >Ara</button>
-
+										
 										</div><!-- End .widget-body -->
 									</div><!-- End .collapse -->
         						</div><!-- End .widget -->
