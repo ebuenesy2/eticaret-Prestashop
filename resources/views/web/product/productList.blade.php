@@ -72,41 +72,41 @@
                                 </div><!-- End .row -->
                             </div><!-- End .products -->
 
+						<!-- Pagination -->
+						<nav aria-label="Page navigation" style="{{$totalProducts > 0 ? '' : 'display:none;'}}">
+							<ul class="pagination justify-content-center">
+								
+								<!-- Önceki sayfa butonu -->
+								<li class="page-item" style="{{$currentPageProduct > 1 ? '' : 'display:none;'}}">
+									<a class="page-link page-link-prev" href="?page={{$currentPageProduct-1}}" aria-label="Öncesi" tabindex="-1" aria-disabled="true">
+										<span aria-hidden="true"><i class="fa fa-long-arrow-left"></i></span>Öncesi
+									</a>
+								</li>
 
-							<!------  Pagination  -->
-							<nav aria-label="Page navigation" style="{{$pageTop > 0 ? '' : 'display:none;'}}">
-								<ul class="pagination justify-content-center">
-									
-									<!-- Önceki sayfa butonu -->
-									<li class="page-item" style="{{$pageNow > 1 ? '' : 'display:none;'}}">
-										<a class="page-link page-link-prev" href="?page={{$pageNow-1}}" aria-label="Öncesi" tabindex="-1" aria-disabled="true">
-											<span aria-hidden="true"><i class="fa fa-long-arrow-left"></i></span>Öncesi
-										</a>
+								<!-- Dinamik sayfa numaraları -->
+								@php
+									$totalPages = $totalPagesProduct; // Toplam sayfa sayısını controller'dan alıyoruz
+									$startPage = max(1, $currentPageProduct - 4); // Başlangıç sayfası
+									$endPage = min($totalPages, $currentPageProduct + 4); // Bitiş sayfası
+								@endphp
+
+								@for ($i = $startPage; $i <= $endPage; $i++)
+									<li class="page-item {{$i == $currentPageProduct ? 'active' : ''}}">
+										<a class="page-link" href="?page={{$i}}">{{$i}}</a>
 									</li>
+								@endfor
 
-									<!-- Dinamik sayfa numaraları -->
-									@php
-										$totalPages = ceil($totalProducts / $rowcount); // Toplam sayfa sayısını hesapla
-										$startPage = max(1, $pageNow - 4); // Başlangıç sayfası (5 sayfa grubu etrafında dönecek)
-										$endPage = min($totalPages, $pageNow + 4); // Bitiş sayfası
-									@endphp
+								<!-- Sonraki sayfa butonu -->
+								<li class="page-item" style="{{$currentPageProduct < $totalPages ? '' : 'display:none;'}}">
+									<a class="page-link page-link-next" href="?page={{$currentPageProduct+1}}" aria-label="Sonrası">
+										Sonrası <span aria-hidden="true"><i class="fa fa-long-arrow-right"></i></span>
+									</a>
+								</li>
 
-									@for ($i = $startPage; $i <= $endPage; $i++)
-										<li class="page-item {{$i == $pageNow ? 'active' : ''}}">
-											<a class="page-link" href="?page={{$i}}">{{$i}}</a>
-										</li>
-									@endfor
+							</ul>
+						</nav>
+						<!-- Pagination Son -->
 
-									<!-- Sonraki sayfa butonu -->
-									<li class="page-item" style="{{$pageNow < $totalPages ? '' : 'display:none;'}}">
-										<a class="page-link page-link-next" href="?page={{$pageNow+1}}" aria-label="Sonrası">
-											Sonrası <span aria-hidden="true"><i class="fa fa-long-arrow-right"></i></span>
-										</a>
-									</li>
-
-								</ul>
-							</nav>
-							<!------  Pagination Son -->
 
 
 
