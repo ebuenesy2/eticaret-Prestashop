@@ -78,7 +78,7 @@
 								
 								<!-- Önceki sayfa butonu -->
 								<li class="page-item" style="{{$currentPageProduct > 1 ? '' : 'display:none;'}}">
-									<a class="page-link page-link-prev" href="?page={{$currentPageProduct-1}}" aria-label="Öncesi" tabindex="-1" aria-disabled="true">
+									<a class="page-link page-link-prev" href="?page={{$currentPageProduct-1}}&category={{ $categoryId }}&pageCategory={{$currentPageCategory}}" aria-label="Öncesi" tabindex="-1" aria-disabled="true">
 										<span aria-hidden="true"><i class="fa fa-long-arrow-left"></i></span>Öncesi
 									</a>
 								</li>
@@ -92,13 +92,13 @@
 
 								@for ($i = $startPage; $i <= $endPage; $i++)
 									<li class="page-item {{$i == $currentPageProduct ? 'active' : ''}}">
-										<a class="page-link" href="?page={{$i}}">{{$i}}</a>
+										<a class="page-link" href="?page={{$i}}&category={{ $categoryId }}&pageCategory={{$currentPageCategory}}">{{$i}}</a>
 									</li>
 								@endfor
 
 								<!-- Sonraki sayfa butonu -->
 								<li class="page-item" style="{{$currentPageProduct < $totalPages ? '' : 'display:none;'}}">
-									<a class="page-link page-link-next" href="?page={{$currentPageProduct+1}}" aria-label="Sonrası">
+									<a class="page-link page-link-next" href="?page={{$currentPageProduct+1}}&category={{ $categoryId }}&pageCategory={{$currentPageCategory}}" aria-label="Sonrası">
 										Sonrası <span aria-hidden="true"><i class="fa fa-long-arrow-right"></i></span>
 									</a>
 								</li>
@@ -106,8 +106,6 @@
 							</ul>
 						</nav>
 						<!-- Pagination Son -->
-
-
 
 
                 		</div><!-- End .col-lg-9 -->
@@ -129,6 +127,7 @@
 									   @lang('admin.category')
 									</h3><!-- End .widget-title -->
 
+									<!-- Kategori Listesi -->
 									<div class="collapse show" id="widget-1">
 										<div class="widget-body">
 											<div class="filter-items filter-items-count">
@@ -142,6 +141,41 @@
 													@endforeach
 												</ul>
 											</div><!-- End .filter-items -->
+
+																						
+											<!-- Pagination -->
+											<nav aria-label="Page navigation" style="{{$totalPagesCategory > 0 ? '' : 'display:none;'}}">
+												<ul class="pagination justify-content-center">
+													
+													<!-- Önceki sayfa butonu -->
+													<li class="page-item" style="{{$currentPageCategory > 1 ? '' : 'display:none;'}}" style="margin-right: -30px;" >
+														<a class="page-link page-link-prev" href="?pageCategory={{$currentPageCategory-1}}" aria-label="Öncesi" tabindex="-1" aria-disabled="true">
+															<span aria-hidden="true"><i class="fa fa-long-arrow-left"></i></span>Öncesi
+														</a>
+													</li>
+
+													<!-- Dinamik sayfa numaraları -->
+													@php
+														$startPage = max(1, $currentPageCategory - 4); // Başlangıç sayfası
+														$endPage = min($totalPagesCategory, $currentPageCategory + 4); // Bitiş sayfası
+													@endphp
+
+													@for ($i = $startPage; $i <= $endPage; $i++)
+														<li class="page-item {{$i == $currentPageCategory ? 'active' : ''}}">
+															<a class="page-link" href="?pageCategory={{$i}}" >{{$i}}</a>
+														</li>
+													@endfor
+
+													<!-- Sonraki sayfa butonu -->
+													<li class="page-item" style="{{$currentPageCategory < $totalPagesCategory ? '' : 'display:none;'}}" style="margin-left: -35px;" >
+														<a class="page-link page-link-next" href="?pageCategory={{$currentPageCategory+1}}" aria-label="Sonrası">
+															Sonrası <span aria-hidden="true"><i class="fa fa-long-arrow-right"></i></span>
+														</a>
+													</li>
+
+												</ul>
+											</nav>
+											<!-- Pagination Son -->
 											
 										
 										</div><!-- End .widget-body -->

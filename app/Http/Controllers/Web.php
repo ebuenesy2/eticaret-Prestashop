@@ -581,18 +581,19 @@ class Web extends Controller
                     // Toplam sayfa sayısını hesapla
                     $totalCategories = count($categories);
                     $totalPages = ceil($totalCategories / $perPage);
+                    //echo "<pre>"; print_r($totalPages); die();
 
                     //! Return
                     $DB["categoryData"] =  $categoryData; //! Kategoriler
                     $DB["currentPageCategory"] =  $currentPage; //! Şimdi Sayfa
-                    $DB["totalPagesCategory"] =  $totalPages; //! Tüm Sayfalar
+                    $DB["totalPagesCategory"] =  $totalPages; //! Tüm Sayfalar Sayısı
                     
                 } else {
                     return response()->json(['error' => 'Kategoriler alınamadı!'], $response->status());
                 }
 
                 // Seçilen Kategori ID
-                $categoryId = $request->query('category', null);  // URL parametresi olarak gelen kategori id
+                $categoryId = $request->query('category', 1);  // URL parametresi olarak gelen kategori id
 
                 if ($categoryId) {
                     // Kategoriye ait ürünleri çek
@@ -675,6 +676,7 @@ class Web extends Controller
                     $DB["totalProducts"] =  count($products); //! Toplam Ürün Sayısı
                     $DB["currentPageProduct"] =  $currentPage; //! Şimdi Sayfa
                     $DB["totalPagesProduct"] =  $totalPages; //! Tüm Sayfalar
+                    $DB["categoryId"] =  $categoryId; //! Seçilen Kategori
                     
                 } else {
                     return response()->json(['error' => 'Ürünler alınamadı!'], $response->status());
