@@ -24,7 +24,7 @@ class Web extends Controller
     //************* Test ***************** */
 
     //! Test
-    public function Test($site_lang="tr",Request $request)
+    public function Test($site_lang="tr")
     {
         \Illuminate\Support\Facades\App::setLocale($site_lang); //! Çoklu Dil
         
@@ -39,16 +39,19 @@ class Web extends Controller
     } //! Test Son
      
     //! Test View
-    public function TestView($site_lang="tr")
+    public function TestView($site_lang="tr",Request $request)
     {
         \Illuminate\Support\Facades\App::setLocale($site_lang); //! Çoklu Dil
         //echo "Dil:"; echo $site_lang;  echo "<br/>"; die();
 
         try {  
-            
-            $DB["title"] =  "title";
+
            
-          
+        
+            
+
+            //! Return
+            $DB["title"] =  "title";
               
             return view('web/test',$DB);
         } 
