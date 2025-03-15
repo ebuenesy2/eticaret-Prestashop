@@ -298,7 +298,7 @@ class Web extends Controller
     //************* Web - Ürün ***************** */
 
     //! Ürün Kategorisi
-    public function ProductCategoryList($site_lang="tr")
+    public function ProductCategoryList($site_lang="tr",Request $request)
     {
         
         \Illuminate\Support\Facades\App::setLocale($site_lang); //! Çoklu Dil
@@ -323,196 +323,72 @@ class Web extends Controller
                 $web_userId = 0;
                 if(isset($_COOKIE["web_userId"])) { $web_userId = (int)$_COOKIE["web_userId"]; }
                 //echo "web_userId:"; echo $web_userId; die();
-                                           
-                //! Kullanıcı Sepet Listesi
-                $DB_web_user_cart= DB::table('web_user_cart')
-                ->join('products', 'products.uid', '=', 'web_user_cart.product_uid')
-                ->join('web_users', 'web_users.id', '=', 'web_user_cart.user_id')
-                ->select('web_user_cart.*', 
-                          'products.title as productsTitle','products.img_url as productsImg',
-                          'products.uid as productsUid','products.seo_url as productsSeo_url',
-                          'products.currency as productsCurrency',
-                          DB::raw('(CASE WHEN products.discounted_price_percent = 0 THEN products.sale_price ELSE products.discounted_price END) AS productsPrice'),
-                          DB::raw('((CASE WHEN products.discounted_price_percent = 0 THEN products.sale_price ELSE products.discounted_price END)*web_user_cart.product_quantity) AS productsTotalPrice'),
-                          DB::raw('SUM((CASE WHEN products.discounted_price_percent = 0 THEN products.sale_price ELSE products.discounted_price END)*web_user_cart.product_quantity) OVER() AS productsAllTotalPrice'),
-                          'web_users.name as userName',
-                          'web_users.surname as userSurName'
-                        )
-                ->where('web_user_cart.user_id','=', $web_userId)
-                ->where('web_user_cart.isActive','=',1)
-                ->orderBy('web_user_cart.id','desc')
-                ->get();
-                //echo "<pre>"; print_r($DB_web_user_cart); die();
 
-                //! Return
-                $DB["DB_web_user_cart"] =  $DB_web_user_cart;
-                $DB["productsCount"] =  $DB_web_user_cart->count();
-                $DB["productsCurrency"] =  $DB_web_user_cart->count() > 0 ? $DB_web_user_cart[0]->productsCurrency : "TL";
-                $DB["productsAllTotalPrice"] =  $DB_web_user_cart->count() > 0 ? $DB_web_user_cart[0]->productsAllTotalPrice : 0;
-                //! Kullanıcı Sepet Listesi -  Son
-                                
-                //! Kullanıcı İstek Listesi - Sayısı
-                $DB_web_user_wish_count = DB::table('web_user_wish')->where('web_user_wish.user_id','=', $web_userId)->count(); //! İstek Listesi - Sayısı
-                //echo "DB_web_user_wish_count:"; echo $DB_web_user_wish_count; die();
+                //! Curl - Kategori
+                $url = "https://marwella1.eldenpazar.com/api/categories";
+                $username = "VIMPBUIW3AW519AMKSIY6SRRZUG7YG4E";  // Prestashop API Key
 
-                //! Return
-                $DB["DB_web_user_wish_count"] =  $DB_web_user_wish_count;
-                //! Kullanıcı İstek Listesi - Sayısı - Son
+                $response = Http::withBasicAuth($username, '')->accept('application/xml')->get($url);
+
+                if ($response->successful()) {
+                    // XML verisini ayrıştır
+                    $xml = simplexml_load_string($response->body());
+
+                    // Kategori ID’lerini al
+                    $categories = [];
+                    foreach ($xml->categories->category as $category) {
+                        $categories[] = (string) $category['id'];
+                    }
+
+                    // Sayfalama için parametreler
+                    $perPage = 24; // Her sayfada 10 kategori
+                    $currentPage = (int) $request->query('pageCategory', 1); // Mevcut sayfa (default: 1)
+                    $offset = ($currentPage - 1) * $perPage; // Sayfa kaydırması
+                    $pagedCategories = array_slice($categories, $offset, $perPage); // Sayfalanmış kategoriler
+
+                    // Kategori adı ve resim URL'lerini al
+                    $categoryData = [];
+                    foreach ($pagedCategories as $categoryId) {
+                        $detailUrl = "https://marwella1.eldenpazar.com/api/categories/{$categoryId}";
+                        $detailResponse = Http::withBasicAuth($username, '')->accept('application/xml')->get($detailUrl);
+
+                        if ($detailResponse->successful()) {
+                            $detailXml = simplexml_load_string($detailResponse->body());
+                            $categoryName = (string) $detailXml->category->name->language;
+
+                            // Kategori resim URL'sini oluştur
+                            $imageUrl = "https://marwella1.eldenpazar.com/api/images/categories/{$categoryId}?ws_key={$username}";
+
+                            $categoryData[] = [
+                                'id' => $categoryId,
+                                'name' => $categoryName,
+                                'image' => $imageUrl
+                            ];
+                        }
+                    }
+
+                    // Toplam sayfa sayısını hesapla
+                    $totalCategories = count($categories);
+                    $totalPages = ceil($totalCategories / $perPage); // Toplam sayfa sayısı
+
+                    //! Return
+                    $DB["categoryData"] =  $categoryData; //! Kategoriler
+                    $DB["currentPageCategory"] =  $currentPage; //! Şimdi Sayfa
+                    $DB["totalPagesCategory"] =  $totalPages; //! Tüm Sayfalar
+
+                    //echo "<pre>"; print_r($categoryData); die();
+
+                } else {
+                    return response()->json(['error' => 'Kategoriler alınamadı!'], $response->status());
+                }
                 
-                //! Ürün Kategorisi
-                $DB_product_categories= DB::table('product_categories')
-                ->orderBy('product_categories.id','desc')
-                ->where('product_categories.lang','=',__('admin.lang'))
-                ->where('product_categories.isActive','=',1)->get();
-                //echo "<pre>"; print_r($DB_product_categories); die();
-
-                //! Return
-                $DB["DB_product_categories"] =  $DB_product_categories;
-                //! Ürün Kategorisi Son
-
                 return view('web/product/category',$DB);
+
             } //! Web
         
         } catch (\Throwable $th) {  throw $th; }
 
     } //! Ürün Kategorisi Son
-
-    //! Ürün Kategorisi - Ürün Listesi
-    public function ProductCategoryView($site_lang="tr",$seo_url)
-    {
-        
-        \Illuminate\Support\Facades\App::setLocale($site_lang); //! Çoklu Dil
-        //echo "Dil:"; echo $site_lang;  echo "<br/>"; die();
-
-        try {
-
-            //! Sayfa Kontrol
-            if($site_lang == "admin") {  return redirect('/'.__('admin.lang').'/'.'admin/');  } //! Admin
-            else { 
-
-                //! Site Bilgileri
-                $DB_HomeSettings= DB::table('homesettings')->where('id','=',2)->first();
-                $seo_keywords =  $DB_HomeSettings->seo_keywords;
-                //echo "<pre>"; print_r($DB_HomeSettings); die();
-
-                $DB["DB_HomeSettings"] =  $DB_HomeSettings;
-                $DB["seo_keywords"] =  $seo_keywords;
-                //! Site Bilgileri Son
-                
-                //! Web UserId
-                $web_userId = 0;
-                if(isset($_COOKIE["web_userId"])) { $web_userId = (int)$_COOKIE["web_userId"]; }
-                //echo "web_userId:"; echo $web_userId; die();
-                                           
-                //! Kullanıcı Sepet Listesi
-                $DB_web_user_cart= DB::table('web_user_cart')
-                ->join('products', 'products.uid', '=', 'web_user_cart.product_uid')
-                ->join('web_users', 'web_users.id', '=', 'web_user_cart.user_id')
-                ->select('web_user_cart.*', 
-                          'products.title as productsTitle','products.img_url as productsImg',
-                          'products.uid as productsUid','products.seo_url as productsSeo_url',
-                          'products.currency as productsCurrency',
-                          DB::raw('(CASE WHEN products.discounted_price_percent = 0 THEN products.sale_price ELSE products.discounted_price END) AS productsPrice'),
-                          DB::raw('((CASE WHEN products.discounted_price_percent = 0 THEN products.sale_price ELSE products.discounted_price END)*web_user_cart.product_quantity) AS productsTotalPrice'),
-                          DB::raw('SUM((CASE WHEN products.discounted_price_percent = 0 THEN products.sale_price ELSE products.discounted_price END)*web_user_cart.product_quantity) OVER() AS productsAllTotalPrice'),
-                          'web_users.name as userName',
-                          'web_users.surname as userSurName'
-                        )
-                ->where('web_user_cart.user_id','=', $web_userId)
-                ->where('web_user_cart.isActive','=',1)
-                ->orderBy('web_user_cart.id','desc')
-                ->get();
-                //echo "<pre>"; print_r($DB_web_user_cart); die();
-
-                //! Return
-                $DB["DB_web_user_cart"] =  $DB_web_user_cart;
-                $DB["productsCount"] =  $DB_web_user_cart->count();
-                $DB["productsCurrency"] =  $DB_web_user_cart->count() > 0 ? $DB_web_user_cart[0]->productsCurrency : "TL";
-                $DB["productsAllTotalPrice"] =  $DB_web_user_cart->count() > 0 ? $DB_web_user_cart[0]->productsAllTotalPrice : 0;
-                //! Kullanıcı Sepet Listesi -  Son
-                                
-                //! Kullanıcı İstek Listesi - Sayısı
-                $DB_web_user_wish_count = DB::table('web_user_wish')->where('web_user_wish.user_id','=', $web_userId)->count(); //! İstek Listesi - Sayısı
-                //echo "DB_web_user_wish_count:"; echo $DB_web_user_wish_count; die();
-
-                //! Return
-                $DB["DB_web_user_wish_count"] =  $DB_web_user_wish_count;
-                //! Kullanıcı İstek Listesi - Sayısı - Son
-
-                //! Uid
-                $dizi=explode("-",$seo_url); //! Parçıyor
-                $uid = $dizi[0]; //! uid
-                //echo "uid:"; echo $uid; die(); //! uid
-
-                //! Ürün Kategori Verileri
-                $DB_Find= DB::table('product_categories')
-                ->where('product_categories.lang','=',__('admin.lang'))
-                ->where('product_categories.uid','=',$uid)
-                ->first();
-                //echo "<pre>"; print_r($DB_Find); die();
-
-                //! Return
-                $DB["DB_Find"] =  $DB_Find;
-                $DB["seoTitle"] =  $DB_Find->seo_url;
-                //! Ürün Kategori Verileri Son
-
-                //! Params - Url Veri Alma
-                // ?page=10&rowcount=10&order=desc
-
-                $page = request('page'); //! Sayfa Numarası
-                $rowcount = request('rowcount') ? request('rowcount') : 20; //! Sayfada Gösterecek Veri Sayısı
-                $orderBy = request('orderBy') ? request('orderBy') : "products.uid";  //! Sıralama Türü
-                $order = request('order') ? request('order') : "desc";  //! Sıralama [asc = Küçükten -> Büyüğe] [ desc = Büyükten -> Küçüğe ]
-                //echo "orderBy: "; echo $orderBy; die();
-
-                //! Sayfada veri gösterme sayısı hesaplama
-                if($page) {
-                    $page = $page - 1; //! Sayfa Numarası
-                    if($page <= 0) { $page = 0; }
-                } else { $page = 0; }
-
-                    
-                //! Ürünler Listesi Kontrol
-                $DB_Products= DB::table('products')
-                ->join('product_categories', 'product_categories.uid', '=', 'products.category')
-                ->select('products.*', 'product_categories.title as CategoryTitle')
-                ->where('products.lang','=',__('admin.lang'))
-                ->where('products.category','=',$uid)
-                ->where('products.isActive','=',1);
-
-                //! Sayfa Sayısı Hesaplama
-                $DB_Count = $DB_Products->count(); //! Veri Sayısı
-                $pageNow = $page+1; //! Bulunduğu Sayfa
-                $pageTop = ceil($DB_Count / $rowcount); //! Toplam Sayfa
-                //echo "pageTop: "; echo $pageTop; die();
-                
-                //! Ürün Listesi
-                $DB_Products_List = $DB_Products
-                ->skip($page)->take($rowcount)
-                ->orderBy($orderBy,$order)
-                ->get();
-                //echo "<pre>"; print_r($DB_Products_List); die();
-
-                //! Return
-                $DB["page"] =  $page; //! Params Sayfa Sayısı
-                $DB["rowcount"] =  $rowcount; //! Params Sayfada Gösterilecek Veri Sayısı
-                $DB["orderBy"] =  $orderBy; //! Params Sıralama Türü
-                $DB["order"] =  $order; //! Params Sıralama
-                
-                $DB["pageNow"] =  $pageNow; //! Şimdiki Sayfa
-                $DB["pageTop"] =  $pageTop; //! Toplam Sayfa
-                $DB["DB_Count"] =  $DB_Count; //! Toplam Ürün Sayısı
-
-                $DB["DB_Products"] =  $DB_Products_List; //! Toplam Ürün Listesi
-                $DB["DB_Products_Count"] =  count($DB_Products_List); //! Gösterilen Ürün Sayısı
-                //! Ürünler Listesi Kontrol - Son
-
-                return view('web/product/category_product_list',$DB);
-            } //! Web
-        
-        } catch (\Throwable $th) {  throw $th; }
-
-    } //! Ürün Kategorisi -Ürün Listesi Son
 
     //! Ürün Listesi - Tüm Ürünler
     public function ProductListAll($site_lang="tr",Request $request)
@@ -559,7 +435,7 @@ class Web extends Controller
                     }
     
                     // Sayfalama için parametreler
-                    $perPage = 10; // Her sayfada 10 kategori
+                    $perPage = 24; // Her sayfada 10 kategori
                     $currentPage = (int) $request->query('pageCategory', 1);
                     $offset = ($currentPage - 1) * $perPage;
                     $pagedCategories = array_slice($categories, $offset, $perPage);

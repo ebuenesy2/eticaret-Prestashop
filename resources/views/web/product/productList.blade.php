@@ -111,16 +111,7 @@
                 		</div><!-- End .col-lg-9 -->
                 		<aside class="col-lg-3 order-lg-first">
                 			<div class="sidebar sidebar-shop">
-
-							    <div>
-									<strong>Arama</strong>
-									<ul>
-										<input type="text" id="search_value" value="{{request('search')}}" style="border: 1px solid #DDD;">
-										<button id="search_button" style="width: 40px;box-sizing: border-box;background-color: green;color: #FFF;cursor: pointer;" >Ara</button>
-									</ul>
-								</div>
-
-								<hr>
+								
 
                 				<div class="widget widget-collapsible">
     								<h3 style="font-size: 28px;font-weight: 100;border-bottom: 1px solid;">
@@ -135,7 +126,7 @@
 													@foreach ($categoryData as $category)
 													<div class="filter-item">
 														<div class="custom-control custom-checkbox">
-															<li><a href="?category={{ $category['id'] }}&pageCategory={{$currentPageCategory}}">{{ htmlspecialchars($category['name']) }}</a></li>
+															<li><a style=" {{$category['id'] == $categoryId ? 'border: 1px solid black;padding: 5px;' : ''}}" href="?category={{ $category['id'] }}&pageCategory={{$currentPageCategory}}">{{ htmlspecialchars($category['name']) }}</a></li>
 														</div><!-- End .custom-checkbox -->
 													</div><!-- End .filter-item -->
 													@endforeach
