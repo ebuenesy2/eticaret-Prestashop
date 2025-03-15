@@ -533,13 +533,14 @@ class Web extends Controller
 
                 $DB["DB_HomeSettings"] =  $DB_HomeSettings;
                 $DB["seo_keywords"] =  $seo_keywords;
+                $DB["DB_Products_Title"] =  __('admin.allProduct'); //! Sayfa Adı
                 //! Site Bilgileri Son
                 
                 //! Web UserId
                 $web_userId = 0;
                 if(isset($_COOKIE["web_userId"])) { $web_userId = (int)$_COOKIE["web_userId"]; }
                 //echo "web_userId:"; echo $web_userId; die();
-                                           
+
                                
                 //! Curl - Kategori
                 $url = "https://marwella1.eldenpazar.com/api/categories";
@@ -590,86 +591,92 @@ class Web extends Controller
                     return response()->json(['error' => 'Kategoriler alınamadı!'], $response->status());
                 }
 
-                //! Curl - Ürün Listesi
-                $url = "https://marwella1.eldenpazar.com/api/products";
-                $username = "VIMPBUIW3AW519AMKSIY6SRRZUG7YG4E";  // Prestashop API Key
-        
-                $response = Http::withBasicAuth($username, '')->accept('application/xml')->get($url);
-        
-                if ($response->successful()) {
-                    // XML verisini ayrıştır
-                    $xml = simplexml_load_string($response->body());
-        
-                    // Tüm ürün ID'lerini al
-                    $products = [];
-                    foreach ($xml->products->product as $product) {
-                        $products[] = (string) $product['id'];
-                    }
-        
-                    // Sayfalama için parametreler
-                    $perPage = 20; // Her sayfada 10 ürün
-                    $currentPage = (int) $request->query('page', 1);
-                    $offset = ($currentPage - 1) * $perPage;
-                    $pagedProducts = array_slice($products, $offset, $perPage);
-        
-                    // Ürün adlarını ve resimlerini çek
-                    $productData = [];
-                    foreach ($pagedProducts as $productId) {
-                        $detailUrl = "https://marwella1.eldenpazar.com/api/products/{$productId}";
-                        $detailResponse = Http::withBasicAuth($username, '')->accept('application/xml')->get($detailUrl);
-        
-                        if ($detailResponse->successful()) {
-                            $detailXml = simplexml_load_string($detailResponse->body());
-                            $productName = (string) $detailXml->product->name->language;
-                            $imageId = (string) $detailXml->product->id_default_image;
-                            $price = (string) $detailXml->product->price; // Fiyat bilgisini al
-                            $formattedPrice = number_format((float)$price, 2, '.', ''); // Fiyat bilgisini Anlamlı Sayı
+                //! Kategori Seçme
+                $categoryId_Choose = $request->query('category', null);  // URL parametresi olarak gelen kategori id
 
-                            // Kategori bilgisini almak için kategori detayını sorgula
-                            $categoryUrl = "https://marwella1.eldenpazar.com/api/categories/{$categoryId}";
-                            $categoryResponse = Http::withBasicAuth($username, '')->accept('application/xml')->get($categoryUrl);
+                if($categoryId_Choose){
+                    echo "Kategori seçildi: "; echo $categoryId_Choose; die();
+                }
+                else {
 
-
-                            // Kategori detaylarını aldıysak
-                            $categoryName = "";
-                            if ($categoryResponse->successful()) {
-                                $categoryXml = simplexml_load_string($categoryResponse->body());
-                                $categoryName = (string) $categoryXml->category->name->language;  // Kategori adını al
-                            }
-                           
-                            // Resim kontrolü: Eğer resim yoksa, ürünü ekleme
-                            if ($imageId) {
-                                $imageUrl = "https://marwella1.eldenpazar.com/api/images/products/{$productId}/{$imageId}";
-                                $productData[] = [
-                                    'id' => $productId,
-                                    'name' => $productName,
-                                    'image' => $imageUrl,
-                                    'category' => $categoryName,
-                                    'price' => $formattedPrice 
-                                ];
-                            }
-        
-                          
+                    //! Curl - Ürün Listesi
+                    $url = "https://marwella1.eldenpazar.com/api/products";
+                    $username = "VIMPBUIW3AW519AMKSIY6SRRZUG7YG4E";  // Prestashop API Key
+            
+                    $response = Http::withBasicAuth($username, '')->accept('application/xml')->get($url);
+            
+                    if ($response->successful()) {
+                        // XML verisini ayrıştır
+                        $xml = simplexml_load_string($response->body());
+            
+                        // Tüm ürün ID'lerini al
+                        $products = [];
+                        foreach ($xml->products->product as $product) {
+                            $products[] = (string) $product['id'];
                         }
+            
+                        // Sayfalama için parametreler
+                        $perPage = 20; // Her sayfada 10 ürün
+                        $currentPage = (int) $request->query('page', 1);
+                        $offset = ($currentPage - 1) * $perPage;
+                        $pagedProducts = array_slice($products, $offset, $perPage);
+            
+                        // Ürün adlarını ve resimlerini çek
+                        $productData = [];
+                        foreach ($pagedProducts as $productId) {
+                            $detailUrl = "https://marwella1.eldenpazar.com/api/products/{$productId}";
+                            $detailResponse = Http::withBasicAuth($username, '')->accept('application/xml')->get($detailUrl);
+            
+                            if ($detailResponse->successful()) {
+                                $detailXml = simplexml_load_string($detailResponse->body());
+                                $productName = (string) $detailXml->product->name->language;
+                                $imageId = (string) $detailXml->product->id_default_image;
+                                $price = (string) $detailXml->product->price; // Fiyat bilgisini al
+                                $formattedPrice = number_format((float)$price, 2, '.', ''); // Fiyat bilgisini Anlamlı Sayı
+
+                                // Kategori bilgisini almak için kategori detayını sorgula
+                                $categoryUrl = "https://marwella1.eldenpazar.com/api/categories/{$categoryId}";
+                                $categoryResponse = Http::withBasicAuth($username, '')->accept('application/xml')->get($categoryUrl);
+
+
+                                // Kategori detaylarını aldıysak
+                                $categoryName = "";
+                                if ($categoryResponse->successful()) {
+                                    $categoryXml = simplexml_load_string($categoryResponse->body());
+                                    $categoryName = (string) $categoryXml->category->name->language;  // Kategori adını al
+                                }
+                            
+                                // Resim kontrolü: Eğer resim yoksa, ürünü ekleme
+                                if ($imageId) {
+                                    $imageUrl = "https://marwella1.eldenpazar.com/api/images/products/{$productId}/{$imageId}";
+                                    $productData[] = [
+                                        'id' => $productId,
+                                        'name' => $productName,
+                                        'image' => $imageUrl,
+                                        'category' => $categoryName,
+                                        'price' => $formattedPrice 
+                                    ];
+                                }
+            
+                            
+                            }
+                        }
+            
+                        // Sayfa sayısını hesapla
+                        $totalProducts = count($products);
+                        $totalPages = ceil($totalProducts / $perPage);
+
+                        //echo "<pre>"; print_r($productData); die();
+
+                        //! Return
+                        $DB["productData"] =  $productData; //! Ürün Listesi
+                        $DB["totalProducts"] =  count($products); //! Toplam Ürün Sayısı
+                        $DB["currentPageProduct"] =  $currentPage; //! Şimdi Sayfa
+                        $DB["totalPagesProduct"] =  $totalPages; //! Tüm Sayfalar
+                        
+                    } else {
+                        return response()->json(['error' => 'Ürünler alınamadı!'], $response->status());
                     }
-        
-                    // Sayfa sayısını hesapla
-                    $totalProducts = count($products);
-                    $totalPages = ceil($totalProducts / $perPage);
-
-                    //echo "<pre>"; print_r($productData); die();
-
-                    //! Return
-                    $DB["productData"] =  $productData; //! Ürün Listesi
-                    $DB["totalProducts"] =  count($products); //! Toplam Ürün Sayısı
-                    $DB["currentPageProduct"] =  $currentPage; //! Şimdi Sayfa
-                    $DB["totalPagesProduct"] =  $totalPages; //! Tüm Sayfalar
-
-                    $DB["DB_Products_Title"] =  __('admin.allProduct');
-                    
-                    
-                } else {
-                    return response()->json(['error' => 'Ürünler alınamadı!'], $response->status());
                 }
 
                 return view('web/product/productList',$DB);
