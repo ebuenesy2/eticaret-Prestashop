@@ -20,7 +20,6 @@
 
                 <ul class="widget-list">
                     <li><a href="/@lang('admin.lang')/faq">Sıkça Sorulan Sorular</a></li>
-                    <li><a href="/@lang('admin.lang')/blog">Blog</a></li>
                 </ul><!-- End .widget-list -->
 
             </div><!-- End .widget -->
