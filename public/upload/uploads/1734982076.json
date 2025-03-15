@@ -1,0 +1,167 @@
+[
+    {
+        "id": 316,
+        "name": "deneme",
+        "surname": "soy",
+        "email": "email@de.com",
+        "value": "14",
+        "img_url": "/assets/img/user/default.jpg",
+        "created_byId": 1,
+        "created_at": "2024-10-29 19:01:29",
+        "isActive": 1
+    },
+    {
+        "id": 315,
+        "name": "denemex x",
+        "surname": "soyx",
+        "email": "email.com@denme",
+        "value": "2",
+        "img_url": "/assets/img/user/default.jpg",
+        "created_byId": 1,
+        "created_at": "2024-10-23 01:33:41",
+        "isActive": 1
+    },
+    {
+        "id": 314,
+        "name": "deneme",
+        "surname": "soy",
+        "email": "ema@dee.com",
+        "value": "23",
+        "img_url": "/assets/img/user/default.jpg",
+        "created_byId": 1,
+        "created_at": "2024-10-23 01:33:19",
+        "isActive": 1
+    },
+    {
+        "id": 309,
+        "name": "ad",
+        "surname": "soyad",
+        "email": "email@densad.xom",
+        "value": "44",
+        "img_url": "/assets/img/user/default.jpg",
+        "created_byId": 1,
+        "created_at": "2024-10-22 22:25:00",
+        "isActive": 1
+    },
+    {
+        "id": 297,
+        "name": "adp güncelle",
+        "surname": "surname 297",
+        "email": "test@test.comp",
+        "value": "351",
+        "img_url": "/assets/img/user/default.jpg",
+        "created_byId": 1,
+        "created_at": "2024-10-22 20:42:24",
+        "isActive": 1
+    },
+    {
+        "id": 295,
+        "name": "adp",
+        "surname": "surname 295",
+        "email": "test@test.comp",
+        "value": "351",
+        "img_url": "/assets/img/user/default.jpg",
+        "created_byId": 1,
+        "created_at": "2024-10-22 20:37:19",
+        "isActive": 1
+    },
+    {
+        "id": 285,
+        "name": "adp",
+        "surname": "surname güncellemep",
+        "email": "test@test.comp",
+        "value": "351",
+        "img_url": "/assets/img/user/default.jpg",
+        "created_byId": 1,
+        "created_at": "2023-11-03 14:58:26",
+        "isActive": 1
+    },
+    {
+        "id": 284,
+        "name": "Name",
+        "surname": "Surname",
+        "email": "test@test.com",
+        "value": "21",
+        "img_url": "/assets/img/user/default.jpg",
+        "created_byId": 1,
+        "created_at": "2023-11-03 14:58:26",
+        "isActive": 1
+    },
+    {
+        "id": 283,
+        "name": "Name",
+        "surname": "Surname",
+        "email": "test@test.com",
+        "value": "22",
+        "img_url": "/assets/img/user/default.jpg",
+        "created_byId": 1,
+        "created_at": "2024-09-09 04:53:23",
+        "isActive": 1
+    },
+    {
+        "id": 282,
+        "name": "Name",
+        "surname": "Surname",
+        "email": "test@test.com",
+        "value": "23",
+        "img_url": "/assets/img/user/default.jpg",
+        "created_byId": 1,
+        "created_at": "2024-09-10 04:53:23",
+        "isActive": 1
+    },
+    {
+        "id": 281,
+        "name": "Deneme",
+        "surname": "Son",
+        "email": "end@dfds.com",
+        "value": "11",
+        "img_url": "/assets/img/user/default.jpg",
+        "created_byId": 1,
+        "created_at": "2024-09-11 04:53:23",
+        "isActive": 0
+    },
+    {
+        "id": 280,
+        "name": "ebuenesx",
+        "surname": "yıldırım",
+        "email": "end@dfds.com",
+        "value": "34",
+        "img_url": "/assets/img/user/default.jpg",
+        "created_byId": 1,
+        "created_at": "2024-09-29 15:27:07",
+        "isActive": 1
+    },
+    {
+        "id": 279,
+        "name": "ebuenes",
+        "surname": "yıldırım",
+        "email": "end@dfds.com",
+        "value": "223",
+        "img_url": "/assets/img/user/default.jpg",
+        "created_byId": 1,
+        "created_at": "2024-10-05 18:46:58",
+        "isActive": 1
+    },
+    {
+        "id": 278,
+        "name": "Name",
+        "surname": "Surname",
+        "email": "test@test.com",
+        "value": "27",
+        "img_url": "/assets/img/user/default.jpg",
+        "created_byId": 1,
+        "created_at": "2023-11-03 14:58:26",
+        "isActive": 1
+    },
+    {
+        "id": 277,
+        "name": "Name",
+        "surname": "Surname",
+        "email": "test@test.com",
+        "value": "28",
+        "img_url": "/assets/img/user/default.jpg",
+        "created_byId": 1,
+        "created_at": "2023-11-03 14:58:26",
+        "isActive": 1
+    }
+]

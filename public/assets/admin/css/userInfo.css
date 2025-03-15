@@ -1,0 +1,146 @@
+.rowUser { width: 100%; display: flex; flex-direction: row; gap: 10px; }
+
+.rowUserLeft { width: 30%;  }
+.rowUserRight { width: 70%; background-color: #1A233A; color: white; padding: 10px;  }
+
+@media screen and (max-width: 959px) {
+     
+    .rowUser {flex-direction: column !important; }
+    .rowUserLeft { width: 100% !important; }
+    .rowUserRight { width: 100% !important; }
+}
+
+
+.card-box {
+  padding: 20px;
+  box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.06), 0 2px 0 0 rgba(0, 0, 0, 0.02);
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  background-clip: padding-box;
+  margin-bottom: 20px;
+  background-color: #1A233A;
+}
+.header-title {
+  text-transform: uppercase;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 16px;
+  margin-bottom: 8px;
+}
+
+.tabs-vertical-env .tab-content {
+  background: #ffffff;
+  display: table-cell;
+  margin-bottom: 30px;
+  padding: 30px;
+  vertical-align: top;
+}
+.tabs-vertical-env .nav.tabs-vertical {
+  display: table-cell;
+  min-width: 120px;
+  vertical-align: top;
+  width: 150px;
+}
+.tabs-vertical-env .nav.tabs-vertical li.active > a {
+  background-color: #ffffff;
+  border: 0;
+}
+.tabs-vertical-env .nav.tabs-vertical li > a {
+  color: #ffffff;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.nav.nav-tabs > li.active > a {
+  background-color: #ffffff;
+  border: 0;
+}
+.nav.nav-tabs > li > a {
+  background-color: transparent;
+  border-radius: 0;
+  border: none;
+  color: #ffffff !important;
+  cursor: pointer;
+  line-height: 50px;
+  font-weight: 500;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-family: 'Roboto', sans-serif;
+}
+.nav.nav-tabs > li > a:hover {
+  color: #228bdf !important;
+}
+.nav.tabs-vertical > li > a {
+  background-color: transparent;
+  border-radius: 0;
+  border: none;
+  color: #333333 !important;
+  cursor: pointer;
+  line-height: 50px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.nav.tabs-vertical > li > a:hover {
+  color: #228bdf !important;
+}
+.tab-content {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  color: #777777;
+}
+.nav.nav-tabs > li:last-of-type a {
+  margin-right: 0px;
+}
+.nav.nav-tabs {
+  border-bottom: 0;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+.navtab-custom li {
+  margin-bottom: -2px;
+}
+.navtab-custom li a {
+  border-top: 2px solid transparent !important;
+}
+.navtab-custom li.active a {
+  border-top: 2px solid #228bdf !important;
+}
+.nav-tab-left.navtab-custom li a {
+  border: none !important;
+  border-left: 2px solid transparent !important;
+}
+.nav-tab-left.navtab-custom li.active a {
+  border-left: 2px solid #228bdf !important;
+}
+.nav-tab-right.navtab-custom li a {
+  border: none !important;
+  border-right: 2px solid transparent !important;
+}
+.nav-tab-right.navtab-custom li.active a {
+  border-right: 2px solid #228bdf !important;
+}
+.nav-tabs.nav-justified > .active > a,
+.nav-tabs.nav-justified > .active > a:hover,
+.nav-tabs.nav-justified > .active > a:focus,
+.tabs-vertical-env .nav.tabs-vertical li.active > a {
+  border: none;
+}
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:focus,
+.nav-tabs > li.active > a:hover,
+.tabs-vertical > li.active > a,
+.tabs-vertical > li.active > a:focus,
+.tabs-vertical > li.active > a:hover {
+  color: #228bdf !important;
+}
+
+.nav.nav-tabs + .tab-content {
+    background: #ffffff;
+    margin-bottom: 20px;
+    padding: 20px;
+}
+.progress.progress-sm .progress-bar {
+    font-size: 8px;
+    line-height: 5px;
+}

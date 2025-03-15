@@ -1,0 +1,167 @@
+<DataList>
+    <Data>
+        <id>316</id>
+        <name>deneme</name>
+        <surname>soy</surname>
+        <email>email@de.com</email>
+        <value>14</value>
+        <img_url>/assets/img/user/default.jpg</img_url>
+        <created_byId>1</created_byId>
+        <created_at>2024-10-29 19:01:29</created_at>
+        <isActive>1</isActive>
+    </Data>
+    <Data>
+        <id>315</id>
+        <name>denemex x</name>
+        <surname>soyx</surname>
+        <email>email.com@denme</email>
+        <value>2</value>
+        <img_url>/assets/img/user/default.jpg</img_url>
+        <created_byId>1</created_byId>
+        <created_at>2024-10-23 01:33:41</created_at>
+        <isActive>1</isActive>
+    </Data>
+    <Data>
+        <id>314</id>
+        <name>deneme</name>
+        <surname>soy</surname>
+        <email>ema@dee.com</email>
+        <value>23</value>
+        <img_url>/assets/img/user/default.jpg</img_url>
+        <created_byId>1</created_byId>
+        <created_at>2024-10-23 01:33:19</created_at>
+        <isActive>1</isActive>
+    </Data>
+    <Data>
+        <id>309</id>
+        <name>ad</name>
+        <surname>soyad</surname>
+        <email>email@densad.xom</email>
+        <value>44</value>
+        <img_url>/assets/img/user/default.jpg</img_url>
+        <created_byId>1</created_byId>
+        <created_at>2024-10-22 22:25:00</created_at>
+        <isActive>1</isActive>
+    </Data>
+    <Data>
+        <id>297</id>
+        <name>adp güncelle</name>
+        <surname>surname 297</surname>
+        <email>test@test.comp</email>
+        <value>351</value>
+        <img_url>/assets/img/user/default.jpg</img_url>
+        <created_byId>1</created_byId>
+        <created_at>2024-10-22 20:42:24</created_at>
+        <isActive>1</isActive>
+    </Data>
+    <Data>
+        <id>295</id>
+        <name>adp</name>
+        <surname>surname 295</surname>
+        <email>test@test.comp</email>
+        <value>351</value>
+        <img_url>/assets/img/user/default.jpg</img_url>
+        <created_byId>1</created_byId>
+        <created_at>2024-10-22 20:37:19</created_at>
+        <isActive>1</isActive>
+    </Data>
+    <Data>
+        <id>285</id>
+        <name>adp</name>
+        <surname>surname güncellemep</surname>
+        <email>test@test.comp</email>
+        <value>351</value>
+        <img_url>/assets/img/user/default.jpg</img_url>
+        <created_byId>1</created_byId>
+        <created_at>2023-11-03 14:58:26</created_at>
+        <isActive>1</isActive>
+    </Data>
+    <Data>
+        <id>284</id>
+        <name>Name</name>
+        <surname>Surname</surname>
+        <email>test@test.com</email>
+        <value>21</value>
+        <img_url>/assets/img/user/default.jpg</img_url>
+        <created_byId>1</created_byId>
+        <created_at>2023-11-03 14:58:26</created_at>
+        <isActive>1</isActive>
+    </Data>
+    <Data>
+        <id>283</id>
+        <name>Name</name>
+        <surname>Surname</surname>
+        <email>test@test.com</email>
+        <value>22</value>
+        <img_url>/assets/img/user/default.jpg</img_url>
+        <created_byId>1</created_byId>
+        <created_at>2024-09-09 04:53:23</created_at>
+        <isActive>1</isActive>
+    </Data>
+    <Data>
+        <id>282</id>
+        <name>Name</name>
+        <surname>Surname</surname>
+        <email>test@test.com</email>
+        <value>23</value>
+        <img_url>/assets/img/user/default.jpg</img_url>
+        <created_byId>1</created_byId>
+        <created_at>2024-09-10 04:53:23</created_at>
+        <isActive>1</isActive>
+    </Data>
+    <Data>
+        <id>281</id>
+        <name>Deneme</name>
+        <surname>Son</surname>
+        <email>end@dfds.com</email>
+        <value>11</value>
+        <img_url>/assets/img/user/default.jpg</img_url>
+        <created_byId>1</created_byId>
+        <created_at>2024-09-11 04:53:23</created_at>
+        <isActive>0</isActive>
+    </Data>
+    <Data>
+        <id>280</id>
+        <name>ebuenesx</name>
+        <surname>yıldırım</surname>
+        <email>end@dfds.com</email>
+        <value>34</value>
+        <img_url>/assets/img/user/default.jpg</img_url>
+        <created_byId>1</created_byId>
+        <created_at>2024-09-29 15:27:07</created_at>
+        <isActive>1</isActive>
+    </Data>
+    <Data>
+        <id>279</id>
+        <name>ebuenes</name>
+        <surname>yıldırım</surname>
+        <email>end@dfds.com</email>
+        <value>223</value>
+        <img_url>/assets/img/user/default.jpg</img_url>
+        <created_byId>1</created_byId>
+        <created_at>2024-10-05 18:46:58</created_at>
+        <isActive>1</isActive>
+    </Data>
+    <Data>
+        <id>278</id>
+        <name>Name</name>
+        <surname>Surname</surname>
+        <email>test@test.com</email>
+        <value>27</value>
+        <img_url>/assets/img/user/default.jpg</img_url>
+        <created_byId>1</created_byId>
+        <created_at>2023-11-03 14:58:26</created_at>
+        <isActive>1</isActive>
+    </Data>
+    <Data>
+        <id>277</id>
+        <name>Name</name>
+        <surname>Surname</surname>
+        <email>test@test.com</email>
+        <value>28</value>
+        <img_url>/assets/img/user/default.jpg</img_url>
+        <created_byId>1</created_byId>
+        <created_at>2023-11-03 14:58:26</created_at>
+        <isActive>1</isActive>
+    </Data>
+</DataList>

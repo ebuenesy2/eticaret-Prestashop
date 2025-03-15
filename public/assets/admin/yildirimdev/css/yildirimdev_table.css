@@ -1,0 +1,58 @@
+
+table{
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+}
+
+table input[ type="checkbox" ] { cursor: pointer; }
+
+th,td{ padding: 1rem;  border: 1px solid black;}
+th {text-align: left;  }
+
+/* Başlık */
+th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #04AA6D;
+    color: white;
+}
+/* Başlık  Son */
+
+
+tr:nth-of-type(2n) { background-color: #ddd; } /* Satırlar */
+tr:hover {background-color: #ddd; } /* Üzerine geldiğinde */
+
+.table-container{ max-width: 100%; overflow-x: auto; }
+
+/* Responsive  */
+@media (max-width: 650px) {
+    th.table_title{ display: none; }
+    th {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+    th::before {
+        content: attr(data-cell) ": " ;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    td{ 
+        display: grid;
+        gap: 0.5rem;
+        grid-template-columns: 15ch auto; 
+        padding: 0.5rem 1rem;
+        margin-top: 2px;
+    }
+
+    td::before {
+        content: attr(data-cell) ": " ;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+}
+/* Responsive  Son */

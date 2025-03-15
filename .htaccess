@@ -1,0 +1,4 @@
+RewriteEngine On
+
+# Uzantı gizleme
+RewriteRule ^(.*)$ public/$1 [L]

@@ -1,0 +1,65 @@
+.tagInputBox {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-left: 4px;
+    padding-right: 4px;
+    /* width: 640px;
+    min-height: 50px; */
+    max-height: max-content;
+    border: 1px solid black;
+}
+
+.tagLeft {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+
+#tagItems {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    gap: 10px;
+}
+
+
+.tagitem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 9px;
+    height: 24px;
+    padding: 4px;
+    background-color: #695CFE;
+    color: white;
+}
+
+#tagItemCancel {
+    color: black;
+    cursor: pointer;
+}
+
+#tagInput {
+    width: 100%;
+    height: 24px;
+    border: 1px solid;
+    cursor: pointer;
+}
+
+.tagRight {
+    display: flex;
+    margin-top: auto;
+    margin-bottom: auto;
+    flex-direction: row;
+    gap: 3px;
+    height: 30px;
+}
+
+#tagCopy,#tagCancel {
+    margin-top: auto;
+    margin-bottom: auto;
+    cursor: pointer;
+}
