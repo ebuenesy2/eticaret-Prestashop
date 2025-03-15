@@ -666,8 +666,9 @@ class Web extends Controller
                 $DB["DB_Products_Count"] =  count($DB_Products_List); //! Gösterilen Ürün Sayısı
                 //! Ürünler Listesi Kontrol - Son
 
-
-                //! Curl
+                //! ***************************
+                
+                //! Curl - Kategori
                 $url = "https://marwella1.eldenpazar.com/api/categories";
                 $username = "VIMPBUIW3AW519AMKSIY6SRRZUG7YG4E";  // Prestashop API Key
     
@@ -709,12 +710,65 @@ class Web extends Controller
 
                     //! Return
                     $DB["categoryData"] =  $categoryData; //! Kategoriler
-                    $DB["currentPage"] =  $currentPage; //! Şimdi Sayfa
-                    $DB["totalPages"] =  $totalPages; //! Tüm Sayfalar
+                    $DB["currentPageCategory"] =  $currentPage; //! Şimdi Sayfa
+                    $DB["totalPagesCategory"] =  $totalPages; //! Tüm Sayfalar
                     
                 } else {
                     return response()->json(['error' => 'Kategoriler alınamadı!'], $response->status());
                 }
+
+                //! Curl - Ürün Listesi
+                $url = "https://marwella1.eldenpazar.com/api/products";
+                $username = "VIMPBUIW3AW519AMKSIY6SRRZUG7YG4E";  // Prestashop API Key
+        
+                $response = Http::withBasicAuth($username, '')->accept('application/xml')->get($url);
+        
+                if ($response->successful()) {
+                    // XML verisini ayrıştır
+                    $xml = simplexml_load_string($response->body());
+        
+                    // Tüm ürün ID'lerini al
+                    $products = [];
+                    foreach ($xml->products->product as $product) {
+                        $products[] = (string) $product['id'];
+                    }
+        
+                    // Sayfalama için parametreler
+                    $perPage = 10; // Her sayfada 10 ürün
+                    $currentPage = (int) $request->query('page', 1);
+                    $offset = ($currentPage - 1) * $perPage;
+                    $pagedProducts = array_slice($products, $offset, $perPage);
+        
+                    // Ürün adlarını ve resimlerini çek
+                    $productData = [];
+                    foreach ($pagedProducts as $productId) {
+                        $detailUrl = "https://marwella1.eldenpazar.com/api/products/{$productId}";
+                        $detailResponse = Http::withBasicAuth($username, '')->accept('application/xml')->get($detailUrl);
+        
+                        if ($detailResponse->successful()) {
+                            $detailXml = simplexml_load_string($detailResponse->body());
+                            $productName = (string) $detailXml->product->name->language;
+                            $imageId = (string) $detailXml->product->id_default_image;
+                            $imageUrl = $imageId ? "https://marwella1.eldenpazar.com/api/images/products/{$productId}/{$imageId}" : '';
+        
+                            $productData[] = ['id' => $productId, 'name' => $productName, 'image' => $imageUrl];
+                        }
+                    }
+        
+                    // Sayfa sayısını hesapla
+                    $totalProducts = count($products);
+                    $totalPages = ceil($totalProducts / $perPage);
+
+                    //! Return
+                    $DB["productData"] =  $productData; //! Kategoriler
+                    $DB["currentPageProduct"] =  $currentPage; //! Şimdi Sayfa
+                    $DB["totalPagesProduct"] =  $totalPages; //! Tüm Sayfalar
+                    
+                } else {
+                    return response()->json(['error' => 'Ürünler alınamadı!'], $response->status());
+                }
+                    
+                
 
                 
 
