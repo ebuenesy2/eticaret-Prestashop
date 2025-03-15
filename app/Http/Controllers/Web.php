@@ -749,6 +749,8 @@ class Web extends Controller
                             $detailXml = simplexml_load_string($detailResponse->body());
                             $productName = (string) $detailXml->product->name->language;
                             $imageId = (string) $detailXml->product->id_default_image;
+                            $price = (string) $detailXml->product->price; // Fiyat bilgisini al
+                            $formattedPrice = number_format((float)$price, 2, '.', ''); // Fiyat bilgisini Anlamlı Sayı
 
                             // Kategori bilgisini almak için kategori detayını sorgula
                             $categoryUrl = "https://marwella1.eldenpazar.com/api/categories/{$categoryId}";
@@ -769,7 +771,8 @@ class Web extends Controller
                                     'id' => $productId,
                                     'name' => $productName,
                                     'image' => $imageUrl,
-                                    'category' => $categoryName 
+                                    'category' => $categoryName,
+                                    'price' => $formattedPrice 
                                 ];
                             }
         
@@ -784,9 +787,11 @@ class Web extends Controller
                     //echo "<pre>"; print_r($productData); die();
 
                     //! Return
-                    $DB["productData"] =  $productData; //! Kategoriler
+                    $DB["productData"] =  $productData; //! Ürün Listesi
+                    $DB["totalProducts"] =  count($products); //! Toplam Ürün Sayısı
                     $DB["currentPageProduct"] =  $currentPage; //! Şimdi Sayfa
                     $DB["totalPagesProduct"] =  $totalPages; //! Tüm Sayfalar
+                    
                     
                 } else {
                     return response()->json(['error' => 'Ürünler alınamadı!'], $response->status());

@@ -37,31 +37,10 @@
                 			<div class="toolbox">
                 				<div class="toolbox-left">
                 					<div class="toolbox-info">
-                						Gösterilen <span>{{$DB_Products_Count}}/{{$DB_Count}}</span> Ürün
+                						Gösterilen <span>{{ count($productData) }}/{{ $totalProducts }}</span> Ürün
                 					</div><!-- End .toolbox-info -->
                 				</div><!-- End .toolbox-left -->
-
-                				<div class="toolbox-right">
-                					<div class="toolbox-sort">
-                						<label for="sortby">Sıralama:</label>
-                						<div class="select-custom">
-
-                                            <!-- Sıralama -->
-											<select name="sortby" id="sortby" class="form-control" onchange="javascript:orderByData(this)" style="cursor: pointer;">
-												<option value="?page=1&rowcount={{$rowcount}}&orderBy=products.uid&order=desc&categories={{$categories}}" {{$orderBy == 'products.uid' && $order == 'desc' ? 'selected' : ''}} >En Yeniler</option>
-												<option value="?page=1&rowcount={{$rowcount}}&orderBy=products.uid&order=asc&categories={{$categories}}" {{$orderBy == 'products.uid' && $order == 'asc' ? 'selected' : ''}}>En Eskiler</option>
-												<option value="?page=1&rowcount={{$rowcount}}&orderBy=products.sale_price&order=asc&categories={{$categories}}" {{$orderBy == 'products.sale_price' && $order == 'asc' ? 'selected' : ''}} >Artan Fiyat</option>
-												<option value="?page=1&rowcount={{$rowcount}}&orderBy=products.sale_price&order=desc&categories={{$categories}}" {{$orderBy == 'products.sale_price' && $order == 'desc' ? 'selected' : ''}} >Azalan Fiyat</option>
-											</select>
-                                            
-                                            <script type="text/javascript">
-                                                function orderByData(elm) { window.location = elm.value; }
-                                            </script>
-                                            <!-- Sıralama Son -->
-                                            
-										</div>
-                					</div><!-- End .toolbox-sort -->
-                				</div><!-- End .toolbox-right -->
+                				
                 			</div><!-- End .toolbox -->
 
                             <div class="products mb-3">
@@ -78,12 +57,11 @@
                                             </figure><!-- End .product-media -->
 											<div class="product-body">
                                                 <div class="product-cat">
-													<a href="/@lang('admin.lang')/product/category/1">Kategori Adı</a>
+													<a href="/@lang('admin.lang')/product/category/1">{{ htmlspecialchars($product['category']) }}</a>
                                                 </div><!-- End .product-cat -->
-                                                <h3 class="product-title"><a href="/@lang('admin.lang')/product/view/1">Ad</a></h3><!-- End .product-title -->
+                                                <h3 class="product-title"><a href="/@lang('admin.lang')/product/view/1">{{ htmlspecialchars($product['name']) }}</a></h3><!-- End .product-title -->
                                                 <div style="display: flex;justify-content: center;" >
-                                                    <h4 class="new-price" style="color: green;font-size: 20px;font-weight: bold;" >10 TL</h4>
-                                                    <h4 class="old-price" style="font-size: 15px;font-weight: bold;" >15 TL</h4>
+                                                    <h4 class="new-price" style="color: green;font-size: 20px;font-weight: bold;" >{{ htmlspecialchars($product['price']) }} TL</h4>
                                                 </div><!-- End .product-price -->
                                             </div><!-- End .product-body -->
                                         </div><!-- End .product -->
@@ -94,29 +72,42 @@
                                 </div><!-- End .row -->
                             </div><!-- End .products -->
 
-                            <!------  Pagination  -->
-                			<nav aria-label="Page navigation" style="{{$pageTop > 0 ? '' : 'display:none;'}}" >
-							    <ul class="pagination justify-content-center" >
-                                    
-							        <li class="page-item" style="{{$pageTop > 1 && $pageNow != 1 ? '' : 'display:none;'}}">
-							            <a class="page-link page-link-prev" href="?page={{$pageNow-1}}&rowcount={{$rowcount}}&orderBy={{$orderBy}}&order={{$order}}&categories={{$categories}}" aria-label="Öncesi" tabindex="-1" aria-disabled="true">
-							                <span aria-hidden="true"><i class="fa fa-long-arrow-left"></i></span>Öncesi
-							            </a>
-							        </li>
-                                    
-                                    @for ($i = 1; $i < $pageTop+1; $i++)
-							        <li class="page-item {{$i==$pageNow ? 'active': ''}} "><a class="page-link" href="?page={{$i}}&rowcount={{$rowcount}}&orderBy={{$orderBy}}&order={{$order}}&categories={{$categories}}">{{$i}}</a></li>
-                                    @endfor
-							       
-							        <li class="page-item"  style="{{$pageTop > 1 && $pageTop != $pageNow ? '' : 'display:none;'}}" >
-							            <a class="page-link page-link-next" href="?page={{$pageNow+1}}&rowcount={{$rowcount}}&orderBy={{$orderBy}}&order={{$order}}&categories={{$categories}}" aria-label="Sonrası">
-							                Sonrası <span aria-hidden="true"><i class="fa fa-long-arrow-right"></i></span>
-							            </a>
-							        </li>
 
-							    </ul>
+							<!------  Pagination  -->
+							<nav aria-label="Page navigation" style="{{$pageTop > 0 ? '' : 'display:none;'}}">
+								<ul class="pagination justify-content-center">
+									
+									<!-- Önceki sayfa butonu -->
+									<li class="page-item" style="{{$pageNow > 1 ? '' : 'display:none;'}}">
+										<a class="page-link page-link-prev" href="?page={{$pageNow-1}}" aria-label="Öncesi" tabindex="-1" aria-disabled="true">
+											<span aria-hidden="true"><i class="fa fa-long-arrow-left"></i></span>Öncesi
+										</a>
+									</li>
+
+									<!-- Dinamik sayfa numaraları -->
+									@php
+										$totalPages = ceil($totalProducts / $rowcount); // Toplam sayfa sayısını hesapla
+										$startPage = max(1, $pageNow - 4); // Başlangıç sayfası (5 sayfa grubu etrafında dönecek)
+										$endPage = min($totalPages, $pageNow + 4); // Bitiş sayfası
+									@endphp
+
+									@for ($i = $startPage; $i <= $endPage; $i++)
+										<li class="page-item {{$i == $pageNow ? 'active' : ''}}">
+											<a class="page-link" href="?page={{$i}}">{{$i}}</a>
+										</li>
+									@endfor
+
+									<!-- Sonraki sayfa butonu -->
+									<li class="page-item" style="{{$pageNow < $totalPages ? '' : 'display:none;'}}">
+										<a class="page-link page-link-next" href="?page={{$pageNow+1}}" aria-label="Sonrası">
+											Sonrası <span aria-hidden="true"><i class="fa fa-long-arrow-right"></i></span>
+										</a>
+									</li>
+
+								</ul>
 							</nav>
-                            <!------  Pagination Son -->
+							<!------  Pagination Son -->
+
 
 
                 		</div><!-- End .col-lg-9 -->
