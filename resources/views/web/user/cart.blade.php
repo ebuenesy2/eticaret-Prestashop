@@ -199,6 +199,12 @@
 		.then(response => response.json())
 		.then(data => {
 			console.log("Server response:", data); // Gelen cevabı kontrol et
+
+			//! Urunleri Listeliyor
+			data.data.forEach((item, index) => {
+				console.log('item:',item);
+			});
+			//! Urunleri Listeliyor Son
 		})
 		.catch(error => {
 			console.error("Error sending data:", error); // Hataları kontrol et

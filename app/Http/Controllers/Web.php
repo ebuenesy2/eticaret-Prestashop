@@ -1631,11 +1631,49 @@ class Web extends Controller
 
         try {
         
-            // Gelen JSON verisini al
-            $cartItems = $request->input('cart');
+            //! Veriler
+            $cartItems = $request->input('cart'); // verisini al
+            $productData = []; //! Urun Listesi
+            
+            //! Urun Listesi
+            for ($i=0; $i <count($cartItems); $i++) { 
+
+                $productId = (int)$cartItems[$i];
+
+                // Prestashop API URL ve API anahtarını tanımla
+                $url = "https://marwella1.eldenpazar.com/api/products/{$productId}";
+                $username = "VIMPBUIW3AW519AMKSIY6SRRZUG7YG4E";  // Prestashop API Key
+
+                // API isteği gönder, XML formatında cevap bekliyoruz
+                $response = Http::withBasicAuth($username, '')->accept('application/xml')->get($url);
+
+                if ($response->successful()) {
+                    // XML verisini ayrıştır
+                    $xml = simplexml_load_string($response->body());
+                    $productName = (string) $xml->product->name->language;
+                    $imageId = (string) $xml->product->id_default_image;
+                    $price = (string) $xml->product->price;
+                    $formattedPrice = number_format((float)$price, 2, '.', '');
+
+                    // Resim URL'si
+                    $imageUrl = $imageId ? "https://marwella1.eldenpazar.com/api/images/products/{$productId}/{$imageId}" : null;
+
+                    // Ürün detaylarını döndür
+                    $productData[] = [
+                        'id' => $productId,
+                        'name' => $productName,
+                        'price' => $formattedPrice,
+                        'image' => $imageUrl,
+                    ];
+
+                
+                } else {
+                    return response()->json(['error' => 'Ürün bilgisi alınamadı!'], $response->status());
+                } 
+            }  
 
             // Başarılı yanıt dön
-            return response()->json(['message' => 'Sepet başarıyla kaydedildi!', 'data' => $cartItems]); 
+            return response()->json(['message' => 'Sepet başarıyla gönderdi', 'data' => $productData]); 
              
         } catch (\Throwable $th) {
             
