@@ -257,20 +257,20 @@
 			if (e.target.closest(".btn-remove")) {
 				let index = e.target.closest(".btn-remove").getAttribute("data-index");
 				cartItems.splice(index, 1);
-				localStorage.setItem("cartItems", JSON.stringify(cartItems));
+				localStorage.setItem("cart", JSON.stringify(cartItems));
 				updateCartDisplay();
 			}
 		});
 
 		// Miktar Güncelleme
-		cartTableBody.addEventListener("input", function(e) {
-			if (e.target.classList.contains("cart-quantity")) {
-				let index = e.target.getAttribute("data-index");
-				cartItems[index].quantity = parseInt(e.target.value) || 1;
-				localStorage.setItem("cartItems", JSON.stringify(cartItems));
-				updateCartDisplay();
-			}
-		});
+		// cartTableBody.addEventListener("input", function(e) {
+		// 	if (e.target.classList.contains("cart-quantity")) {
+		// 		let index = e.target.getAttribute("data-index");
+		// 		cartItems[index].quantity = parseInt(e.target.value) || 1;
+		// 		localStorage.setItem("cartItems", JSON.stringify(cartItems));
+		// 		updateCartDisplay();
+		// 	}
+		// });
 
 		//! Sepet - Güncelleme
 		document.querySelector('#CartUpdate').addEventListener('click', e => { updateCartDisplay(); }); 
@@ -278,7 +278,8 @@
 		//! Sepet - Güncelleme - Sil
 		document.querySelector('#CartDeleteAll').addEventListener('click', e => { 
 
-			localStorage.getItem("cart");
+			var cartItems = [];
+			localStorage.setItem("cart", JSON.stringify(cartItems));
 
 			updateCartDisplay();
 
