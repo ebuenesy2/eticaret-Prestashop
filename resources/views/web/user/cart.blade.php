@@ -126,7 +126,7 @@
 									<!-- Sipariş Adı -->
 			            			<div style="display:flex;flex-direction: column;" >
 								      <label for="orderName">Sipariş Adı</label>
-									  <input type="text" class="form-control" id="orderName">
+									  <input type="text" class="form-control" id="orderName" value="Alınacak Urun Listesi">
 			            			</div>
 									<!-- Sipariş Adı - Son -->
 
@@ -274,7 +274,7 @@
 			var cartItems = [];
 			localStorage.setItem("cart", JSON.stringify(cartItems));
 
-			updateCartDisplay();
+			cartTableBody.innerHTML=''; //! Tabloyu sıfırladı
 
 		}); //! Sepet - Güncelleme - Sil Son
 
@@ -282,11 +282,15 @@
 		//! Sepet - Sipariş Oluşturma
 		document.querySelector('#orderCreate').addEventListener('click', e => { 
 
-			console.log("cartItemsData:",cartItemsData);
+			//console.log("cartItemsData:",cartItemsData);
+
+			let orderName = $('#orderName').val(); //! Sipariş Adı
+			let totalValue = 0; // Toplam Değer Hesaplama
 
 			// Tabloyu Oluştur
 			let divToPrintHTML = "<table border='1' style='width: 100%; border-collapse: collapse;'>";
 			divToPrintHTML += `
+				<h1>Sipariş Adı: ${orderName}</h1> <!-- Sipariş Adı -->
 				<thead>
 					<tr>
 						<th>Ürün ID</th>
@@ -302,6 +306,7 @@
 
 			cartItemsData.forEach(item => {
 				const totalPrice = (item.price * item.quantity).toFixed(2); // Toplam fiyat
+				totalValue += parseFloat(totalPrice); // Genel toplamı artır
 				divToPrintHTML += `
 					<tr>
 						<td>${item.id}</td>
@@ -314,7 +319,11 @@
 				`;
 			});
 
-			divToPrintHTML += "</tbody></table>";
+			divToPrintHTML += `
+					</tbody>
+				</table>
+				<h3 style="text-align: right;">Toplam Değer: ${totalValue.toFixed(2)} TL</h3> <!-- Toplam Değer -->
+			`;
 
 			
 			//! Export

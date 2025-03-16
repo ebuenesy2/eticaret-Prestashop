@@ -80,9 +80,10 @@
 <script src="{{asset('/assets/admin')}}/js/00_0_sabit/4_0_controllersToSettingLocalStorage.js"></script>
 
 
-<!------- Sepetim JS --->
-<script src="{{asset('/assets/web')}}/js/user/userCart.js"></script>
-
-
-<!------- İstek Listesi JS --->
-<script src="{{asset('/assets/web')}}/js/user/userWish.js"></script>
+<!------- Sepet Sayısı --->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+		let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        document.getElementById("cart-count").textContent = cart.length; //! Sepet Sayısını Veriyor
+    });
+</script>
