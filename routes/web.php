@@ -49,12 +49,16 @@ Route::post('/user/profile/edit', [Web::class,'UserProfileEdit']) -> name("web.u
 Route::post('/user/settings/password/edit', [Web::class,'UserSettingsPasswordEdit']) -> name("web.user.settings.password.edit"); //! Web - Kullanıcı - Şifre - Güncelleme
 
 
+//************* Web - Sepet ***************** */
+
 //! Sepet 
 Route::get('/{lang}/user/cart', [Web::class,'UserCart']) -> name("web.cart"); //! Web - Kullanıcı Sepet
 Route::post('/user/cart/add/post', [Web::class,'UserCartAddPost']) -> name("web.user.cart.add.post"); //! Web Kullanıcı Sepet Ekle - Post
 Route::post('/user/cart/delete/post', [Web::class,'UserCartDeletePost']) -> name("web.user.cart.delete.post"); //! Web Kullanıcı Sepet Sil- Post
 Route::get('/{lang}/user/cart/delete/all', [Web::class,'UserCartDeleteAll']) -> name("web.user.cart.delete.all"); //! Web Kullanıcı Sepet Tümü Sil
 Route::post('/user/cart/edit/post', [Web::class,'UserCartEditPost']) -> name("web.user.cart.edit.post"); //! Web Kullanıcı Sepet Güncelleme- Post
+
+Route::post('/user/cart/local', [Web::class,'UserCartLocal']) -> name("web.user.cart.local"); //! Web Local - Urun Bilgleri
 
 //! Sipariş
 Route::post('/user/order/add/post', [Web::class,'UserOrderAddPost']) -> name("web.user.order.add.post"); //! Web Kullanıcı Sipariş Ekle - Post

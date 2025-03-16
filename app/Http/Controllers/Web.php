@@ -1621,6 +1621,35 @@ class Web extends Controller
 
     } //! Kullanıcı Sepet - Veri Güncelleme Post Son
 
+    
+    //! Kullanıcı Sepet - Local
+    public function UserCartLocal(Request $request)
+    {
+        $siteLang= $request->siteLang; //! Çoklu Dil
+        \Illuminate\Support\Facades\App::setLocale($siteLang); //! Çoklu Dil
+        //echo "Dil:"; echo $site_lang;  echo "<br/>";  die();
+
+        try {
+        
+            // Gelen JSON verisini al
+            $cartItems = $request->input('cart');
+
+            // Başarılı yanıt dön
+            return response()->json(['message' => 'Sepet başarıyla kaydedildi!', 'data' => $cartItems]); 
+             
+        } catch (\Throwable $th) {
+            
+            $response = array(
+                'status' => 'error',
+                'msg' => __('admin.transactionFailed'),
+                'error' => $th,            
+            );
+
+            return response()->json($response);
+        }
+
+    } //! Kullanıcı Sepet - Local Son
+
     //************* Kullanıcı Sipariş ***************** */
 
     //! Kullanıcı Sepet Ekle -  Post

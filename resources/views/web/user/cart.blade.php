@@ -175,6 +175,8 @@
 
 </body>
 
+
+
 <script>
 	document.addEventListener("DOMContentLoaded", function() {
 		const cartTableBody = document.querySelector("table.table-cart tbody");
@@ -185,82 +187,22 @@
 		let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
 		console.log("cartItems:",cartItems);
 
-		// Ürün bilgilerini API'den çek
-		async function fetchProductDetails() { 
-			try {
-				const productDetails = await Promise.all(cartItems.map(async item => { 
-                             
-					const response = await fetch(`https://marwella1.eldenpazar.com/api/products/${item}`, {
-						method: 'GET',
-						headers: {
-							'Authorization': 'Basic ' + btoa('VIMPBUIW3AW519AMKSIY6SRRZUG7YG4E:'),
-							'Accept': 'application/xml'
-						}
-					});
-
-					console.log("response:",response);
-
-					
-
-					if (response.ok) {
-						const data = await response.text(); // XML verisini al
-						const parser = new DOMParser();
-						const xmlDoc = parser.parseFromString(data, "application/xml");
-
-						// Ürün detaylarını ayrıştır
-						return {
-							id: item.id,
-							name: xmlDoc.querySelector("product > name > language").textContent,
-							price: xmlDoc.querySelector("product > price").textContent,
-							image: `https://marwella1.eldenpazar.com/api/images/products/${item.id}/${xmlDoc.querySelector("product > id_default_image").textContent}`,
-							quantity: item.quantity // localStorage'daki miktar
-						};
-					} else {
-						console.error(`Ürün (${item.id}) bilgisi alınamadı.`);
-					}
-				}));
-
-				return productDetails.filter(item => item); // Geçerli ürünleri döndür
-
-
-			} catch (error) {
-				console.error("API Hatası:", error);
-			}
-		}
-
-		// Ürün bilgilerini tabloya ekle
-		async function displayCartProducts() { 
-			const products = await fetchProductDetails();
-			const tableBody = document.querySelector("table.table-cart tbody");
-
-			console.log("products:",products);
-
-			// products.forEach(product => {
-			// 	const row = document.createElement("tr");
-			// 	row.innerHTML = `
-			// 		<td class="product-col">
-			// 			<div class="product">
-			// 				<figure class="product-media">
-			// 					<img src="${product.image}" alt="${product.name}">
-			// 				</figure>
-			// 				<h3 class="product-title">${product.name}</h3>
-			// 			</div>
-			// 		</td>
-			// 		<td class="price-col">${product.price} TL</td>
-			// 		<td class="quantity-col">
-			// 			<input type="number" class="form-control" value="${product.quantity}" min="1">
-			// 		</td>
-			// 		<td class="total-col">${(product.price * product.quantity).toFixed(2)} TL</td>
-			// 		<td class="remove-col">
-			// 			<button class="btn-remove" data-id="${product.id}">X</button>
-			// 		</td>
-			// 	`;
-			// 	tableBody.appendChild(row);
-			// });
-		}
-
-		// Sayfa yüklendiğinde başlat
-		displayCartProducts();
+		// Verileri Laravel'e POST isteği ile gönder
+		fetch('/user/cart/local', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json', // JSON formatında veri gönderiyoruz
+				'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // CSRF token
+			},
+			body: JSON.stringify({ cart: cartItems }) // LocalStorage verisini gönderiyoruz
+		})
+		.then(response => response.json())
+		.then(data => {
+			console.log("Server response:", data); // Gelen cevabı kontrol et
+		})
+		.catch(error => {
+			console.error("Error sending data:", error); // Hataları kontrol et
+		});
 
 
 		
