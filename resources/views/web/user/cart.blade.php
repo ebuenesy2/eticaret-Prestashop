@@ -42,7 +42,7 @@
 
 	                	<div class="row">
 	                		<div class="col-lg-9">
-	                			<table class="table table-cart table-mobile">
+	                			<table class="table table-cart table-mobile" >
 									<thead>
 										<tr>
 											<th>@lang('admin.product')</th>
@@ -172,7 +172,8 @@
 
 </body>
 
-
+<!------  Iframe -->
+<iframe id="iFramePdf" src="" style="display:none;"></iframe>
 
 <script>
 	document.addEventListener("DOMContentLoaded", function() {
@@ -183,8 +184,10 @@
 		// LocalStorage'dan ürün ID'lerini al
 		let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
 		console.log("cartItems:",cartItems);
+		
+		let cartItemsData = []; //! Urun Listesi
 
-		updateCartDisplay(); //! Fonksiyon Çalıştırma
+		updateCartDisplay(); //! Fonksiyon Çalıştırma - Tablo Verileri Listeliyor
 
 		//! Urunleri Listeleme
 		function updateCartDisplay() {
@@ -203,6 +206,8 @@
 			.then(response => response.json())
 			.then(data => {
 				console.log("Server response:", data); // Gelen cevabı kontrol et
+
+				cartItemsData = data.data; //! Urun Listesi
 
 				//! Urunleri Listeliyor
 				data.data.forEach((item, index) => {
@@ -224,9 +229,7 @@
 						</td>
 						<td class="price-col">${item.price} TL </td>
 						<td class="quantity-col">
-							<div class="cart-product-quantity">
-								<input type="number" class="form-control cart-quantity" data-index="${index}" value="${item.quantity}" min="1">
-							</div>
+							<div class="cart-product-quantity"> ${item.quantity} </div>
 						</td>
 						<td class="total-col">${(item.price * item.quantity).toFixed(2)} TL </td>
 						<td class="remove-col">
@@ -262,16 +265,6 @@
 			}
 		});
 
-		// Miktar Güncelleme
-		// cartTableBody.addEventListener("input", function(e) {
-		// 	if (e.target.classList.contains("cart-quantity")) {
-		// 		let index = e.target.getAttribute("data-index");
-		// 		cartItems[index].quantity = parseInt(e.target.value) || 1;
-		// 		localStorage.setItem("cartItems", JSON.stringify(cartItems));
-		// 		updateCartDisplay();
-		// 	}
-		// });
-
 		//! Sepet - Güncelleme
 		document.querySelector('#CartUpdate').addEventListener('click', e => { updateCartDisplay(); }); 
 
@@ -284,6 +277,58 @@
 			updateCartDisplay();
 
 		}); //! Sepet - Güncelleme - Sil Son
+
+
+		//! Sepet - Sipariş Oluşturma
+		document.querySelector('#orderCreate').addEventListener('click', e => { 
+
+			console.log("cartItemsData:",cartItemsData);
+
+			// Tabloyu Oluştur
+			let divToPrintHTML = "<table border='1' style='width: 100%; border-collapse: collapse;'>";
+			divToPrintHTML += `
+				<thead>
+					<tr>
+						<th>Ürün ID</th>
+						<th>Ürün Adı</th>
+						<th>Fiyat</th>
+						<th>Adet</th>
+						<th>Resim</th>
+						<th>Toplam</th>
+					</tr>
+				</thead>
+				<tbody>
+			`;
+
+			cartItemsData.forEach(item => {
+				const totalPrice = (item.price * item.quantity).toFixed(2); // Toplam fiyat
+				divToPrintHTML += `
+					<tr>
+						<td>${item.id}</td>
+						<td>${item.name}</td>
+						<td>${item.price} TL</td>
+						<td>${item.quantity}</td>
+						<td><img src="${item.image}" alt="${item.name}" width="50"></td>
+						<td>${totalPrice} TL</td>
+					</tr>
+				`;
+			});
+
+			divToPrintHTML += "</tbody></table>";
+
+			
+			//! Export
+			var new_window = document.getElementById("iFramePdf").contentWindow; //! İframe
+			var new_windowDocument = new_window.document; //! Veri
+
+			$("body",new_windowDocument).html(""); //! Sıfırlama
+			$("body",new_windowDocument).append(divToPrintHTML); //! Ekran Ekleme
+
+			var new_window = new_window.print(); //! Ekran Çıktısı
+			//! Export Son
+		
+
+		}); //! Sepet - Sipariş Oluşturma  Son
 		
 		
 
