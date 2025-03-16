@@ -51,18 +51,21 @@
                                     <div class="col-6 col-md-4 col-lg-4 col-xl-3">
                                         <div class="product product-7 text-center">
                                             <figure class="product-media">
-                                                <a href="/@lang('admin.lang')/product/view/{{ htmlspecialchars($product['id']) }}">
+                                                <a>
                                                     <img src="{{ htmlspecialchars($product['image']) }}" style="width: 100%;height: 250px;object-fit: contain;" >
                                                 </a>
                                             </figure><!-- End .product-media -->
 											<div class="product-body">
                                                 <div class="product-cat">
-													<a href="/@lang('admin.lang')/product/category/1">{{ htmlspecialchars($product['category']) }}</a>
+													<a>{{ htmlspecialchars($product['category']) }}</a>
                                                 </div><!-- End .product-cat -->
-                                                <h3 class="product-title"><a href="/@lang('admin.lang')/product/view/1">{{ htmlspecialchars($product['name']) }}</a></h3><!-- End .product-title -->
+                                                <h3 class="product-title"><a>{{ htmlspecialchars($product['name']) }}</a></h3><!-- End .product-title -->
                                                 <div style="display: flex;justify-content: center;" >
                                                     <h4 class="new-price" style="color: green;font-size: 20px;font-weight: bold;" >{{ htmlspecialchars($product['price']) }} TL</h4>
                                                 </div><!-- End .product-price -->
+
+												<button class="btn btn-primary add-to-cart" data-id="{{ htmlspecialchars($product['id']) }}">Sepete Ekle</button>
+
                                             </div><!-- End .product-body -->
                                         </div><!-- End .product -->
                                     </div>
@@ -202,9 +205,47 @@
     <!------- Footer - Bottom --->
     @include('web.include.footer-bottom')
 	
-    <!------- JS --->
-    <script src="{{asset('/assets/web')}}/js/product/product_actions_web.js"></script>
-
 </body>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		let cart = JSON.parse(localStorage.getItem("cart")) || [];
+		updateCartButtons();
+
+		document.querySelectorAll(".add-to-cart").forEach(button => {
+			button.addEventListener("click", function () {
+				let productId = this.getAttribute("data-id");
+
+				if (cart.includes(productId)) {
+					// Sepetten çıkar
+					cart = cart.filter(id => id !== productId);
+				} else {
+					// Sepete ekle
+					cart.push(productId);
+				}
+
+				localStorage.setItem("cart", JSON.stringify(cart));
+				updateCartButtons();
+			});
+		});
+
+		function updateCartButtons() {
+			document.querySelectorAll(".add-to-cart").forEach(button => {
+				let productId = button.getAttribute("data-id");
+				if (cart.includes(productId)) {
+					button.textContent = "Sepetten Çıkar";
+					button.classList.remove("btn-primary");
+					button.classList.add("btn-danger");
+				} else {
+					button.textContent = "Sepete Ekle";
+					button.classList.remove("btn-danger");
+					button.classList.add("btn-primary");
+				}
+			});
+
+			document.getElementById("cart-count").textContent = cart.length;
+		}
+	});
+</script>
 
 </html>
