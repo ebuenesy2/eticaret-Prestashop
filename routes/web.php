@@ -35,36 +35,11 @@ Route::get('/{lang}/about', [Web::class,'About']) -> name("web.about"); //! Web 
 Route::get('/{lang}/error404', [Web::class,'Error404']) -> name("web.error.404"); //! Web - Hata 404
 Route::get('/{lang}/coming-soon', [Web::class,'ComingSoon']) -> name("web.coming-soon"); //! Web - Yakında
 
-//************* Web - Kullanıcı ***************** */
-
-//! Giriş
-Route::get('/{lang}/user/login', [Web::class,'UserLogin']) -> name("web.user.login"); //! Web - Kullanıcı - Giriş
-Route::post('/user/login/post', [Web::class,'UserLoginPost']) -> name("web.user.login.post"); //! Web Kullanıcı Giriş - Post
-Route::get('/{lang}/user/logout', [Web::class,'UserLogout']) -> name("web.user.logout"); //! Web - Kullanıcı - Çıkış
-Route::post('/user/register/post', [Web::class,'UserRegisterPost']) -> name("web.register.post"); //! Web Kullanıcı Kayıt - Post - Router
-
-//! Profil
-Route::get('/{lang}/user/profile', [Web::class,'UserProfile']) -> name("web.user.profile"); //! Web - Kullanıcı - Profil
-Route::post('/user/profile/edit', [Web::class,'UserProfileEdit']) -> name("web.user.profile.edit"); //! Web - Kullanıcı - Profil - Güncelleme
-Route::post('/user/settings/password/edit', [Web::class,'UserSettingsPasswordEdit']) -> name("web.user.settings.password.edit"); //! Web - Kullanıcı - Şifre - Güncelleme
-
-
 //************* Web - Sepet ***************** */
 
 //! Sepet 
 Route::get('/{lang}/user/cart', [Web::class,'UserCart']) -> name("web.cart"); //! Web - Kullanıcı Sepet
-Route::post('/user/cart/add/post', [Web::class,'UserCartAddPost']) -> name("web.user.cart.add.post"); //! Web Kullanıcı Sepet Ekle - Post
-Route::post('/user/cart/delete/post', [Web::class,'UserCartDeletePost']) -> name("web.user.cart.delete.post"); //! Web Kullanıcı Sepet Sil- Post
-Route::get('/{lang}/user/cart/delete/all', [Web::class,'UserCartDeleteAll']) -> name("web.user.cart.delete.all"); //! Web Kullanıcı Sepet Tümü Sil
-Route::post('/user/cart/edit/post', [Web::class,'UserCartEditPost']) -> name("web.user.cart.edit.post"); //! Web Kullanıcı Sepet Güncelleme- Post
-
 Route::post('/user/cart/local', [Web::class,'UserCartLocal']) -> name("web.user.cart.local"); //! Web Local - Urun Bilgleri
-
-//! Sipariş
-Route::post('/user/order/add/post', [Web::class,'UserOrderAddPost']) -> name("web.user.order.add.post"); //! Web Kullanıcı Sipariş Ekle - Post
-
-Route::get('/{lang}/user/checkout', [Web::class,'UserCheckout']) -> name("web.user.checkout"); //! Web - Kullanıcı - Checkout
-
 
 //************* Admin Test  ***************** */
 

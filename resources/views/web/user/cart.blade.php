@@ -83,10 +83,10 @@
 								<!-- Kart Buttonlar -->
 								<div class="cart-bottom">
 			            			<div class="cart-discount">
-									 <a href="/@lang('admin.lang')/user/cart/delete/all" class="btn btn-outline-dark-2 btn-block mb-3" style="background-color: red;color: white;"><span>Sepet Boşalt</span></a>
+									 <a id="CartDeleteAll" class="btn btn-outline-dark-2 btn-block mb-3" style="background-color: red;color: white; cursor:pointer; "><span>Sepet Boşalt</span></a>
 			            			</div><!-- End  coupon -->
 
-			            			<a id="cartUpdate" style="cursor:pointer;" class="btn btn-outline-dark-2"><span>Sepet Güncelle</span><i class="fa fa-refresh"></i></a>
+			            			<a id="CartUpdate" style="cursor:pointer;" class="btn btn-outline-dark-2"><span>Sepet Güncelle</span><i class="fa fa-refresh"></i></a>
 		            			</div>
 								<!-- Kart Buttonlar Son -->
 
@@ -250,8 +250,39 @@
 				console.error("Error sending data:", error); // Hataları kontrol et
 			});
 			
-		}//! Urunleri Listeleme Son
+		}//! Urunleri Listeleme 
+		
+		// Ürün Silme
+		cartTableBody.addEventListener("click", function(e) {
+			if (e.target.closest(".btn-remove")) {
+				let index = e.target.closest(".btn-remove").getAttribute("data-index");
+				cartItems.splice(index, 1);
+				localStorage.setItem("cartItems", JSON.stringify(cartItems));
+				updateCartDisplay();
+			}
+		});
 
+		// Miktar Güncelleme
+		cartTableBody.addEventListener("input", function(e) {
+			if (e.target.classList.contains("cart-quantity")) {
+				let index = e.target.getAttribute("data-index");
+				cartItems[index].quantity = parseInt(e.target.value) || 1;
+				localStorage.setItem("cartItems", JSON.stringify(cartItems));
+				updateCartDisplay();
+			}
+		});
+
+		//! Sepet - Güncelleme
+		document.querySelector('#CartUpdate').addEventListener('click', e => { updateCartDisplay(); }); 
+
+		//! Sepet - Güncelleme - Sil
+		document.querySelector('#CartDeleteAll').addEventListener('click', e => { 
+
+			localStorage.getItem("cart");
+
+			updateCartDisplay();
+
+		}); //! Sepet - Güncelleme - Sil Son
 		
 		
 
