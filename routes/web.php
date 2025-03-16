@@ -48,12 +48,6 @@ Route::get('/{lang}/user/profile', [Web::class,'UserProfile']) -> name("web.user
 Route::post('/user/profile/edit', [Web::class,'UserProfileEdit']) -> name("web.user.profile.edit"); //! Web - Kullanıcı - Profil - Güncelleme
 Route::post('/user/settings/password/edit', [Web::class,'UserSettingsPasswordEdit']) -> name("web.user.settings.password.edit"); //! Web - Kullanıcı - Şifre - Güncelleme
 
-//! İstek Listesi
-Route::get('/{lang}/user/wishlist', [Web::class,'UserWishlist']) -> name("web.wishlist"); //! Web - Kullanıcı - İstek Listesi
-Route::post('/user/wishlist/add/post', [Web::class,'UserWishAddPost']) -> name("web.user.wishlist.add.post"); //! Web Kullanıcı İstek Listesi Ekle - Post
-Route::post('/user/wishlist/delete/post', [Web::class,'UserWishDeletePost']) -> name("web.user.wishlist.delete.post"); //! Web Kullanıcı İstek Listesi Sil- Post
-Route::get('/{lang}/user/wishlist/all/delete', [Web::class,'UserWishAllDelete']) -> name("web.user.wishlist.all.delete"); //! Web Kullanıcı İstek Listesi - Tümü Sil
-Route::get('/{lang}/user/wishlist/all/cart/add', [Web::class,'UserWishAllCartAdd']) -> name("web.user.wishlist.all.cart.add"); //! Web Kullanıcı İstek Listesi - Tümü Sepette Ekle
 
 //! Sepet 
 Route::get('/{lang}/user/cart', [Web::class,'UserCart']) -> name("web.cart"); //! Web - Kullanıcı Sepet

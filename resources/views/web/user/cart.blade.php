@@ -15,7 +15,7 @@
         <!------- Header --->
         @include('web.include.header')
 
-        <main class="main" id="cart_info" data_products_currency="{{$productsCurrency}}" data_time="{{time()}}"  >
+        <main class="main" id="cart_info" data_products_currency="0" data_time="{{time()}}"  >
         	<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
         		<div class="container">
         			<h1 class="page-title">@lang('admin.myCart')</h1>
@@ -55,31 +55,7 @@
 
 									<tbody>
 
-										@for ($i = 0; $i < count($DB_web_user_cart); $i++)
-										<tr>
-											<td class="product-col">
-												<div class="product">
-													<figure class="product-media">
-														<a href="/@lang('admin.lang')/product/view/{{$DB_web_user_cart[$i]->productsUid}}-{{$DB_web_user_cart[$i]->productsSeo_url}}">
-															<img src="{{$DB_web_user_cart[$i]->productsImg}}" alt="Product image">
-														</a>
-													</figure>
-
-													<h3 class="product-title">
-														<a href="/@lang('admin.lang')/product/view/{{$DB_web_user_cart[$i]->productsUid}}-{{$DB_web_user_cart[$i]->productsSeo_url}}">{{$DB_web_user_cart[$i]->productsTitle}}</a>
-													</h3><!-- End .product-title -->
-												</div><!-- End .product -->
-											</td>
-											<td class="price-col" >{{$DB_web_user_cart[$i]->productsPrice}} {{$DB_web_user_cart[$i]->productsCurrency}}</td>
-											<td class="quantity-col">
-                                                <div class="cart-product-quantity">
-                                                    <input type="number" class="form-control" id="cart-product-quantity" data_id="{{$DB_web_user_cart[$i]->id}}" data_productsUid="{{$DB_web_user_cart[$i]->product_uid}}" data_productsPrice="{{$DB_web_user_cart[$i]->productsPrice}}" data_productsCurrency="{{$DB_web_user_cart[$i]->productsCurrency}}" data_product_quantity="{{$DB_web_user_cart[$i]->product_quantity}}" value="{{$DB_web_user_cart[$i]->product_quantity}}" min="1" max="10" step="1" data-decimals="0" required>
-                                                </div><!-- End .cart-product-quantity -->
-                                            </td>
-											<td class="total-col" data_id="{{$DB_web_user_cart[$i]->id}}" data_productstotalprice="{{$DB_web_user_cart[$i]->productsTotalPrice}}" >{{$DB_web_user_cart[$i]->productsTotalPrice}} {{$DB_web_user_cart[$i]->productsCurrency}}</td>
-											<td class="remove-col"><button class="btn-remove" id="userCartDelete" data_id="{{$DB_web_user_cart[$i]->id}}" data_productstitle="{{$DB_web_user_cart[$i]->productsTitle}}" ><i data_id="{{$DB_web_user_cart[$i]->id}}" data_productstitle="{{$DB_web_user_cart[$i]->productsTitle}}" class="fa fa-close" style="color: red;" ></i></button></td>
-										</tr>
-										@endfor
+										
 										
 									</tbody>
 								</table><!-- End .table table-wishlist -->
@@ -165,6 +141,8 @@
 
 	                		</aside><!-- End .col-lg-3 -->
 	                	</div><!-- End .row -->
+
+
 	                </div><!-- End .container -->
                 </div><!-- End .cart -->
             </div><!-- End .page-content -->
@@ -196,5 +174,99 @@
 	<script src="{{asset('/assets/web')}}/js/user/userCart_List.js"></script>
 
 </body>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function() {
+		const cartTableBody = document.querySelector("table.table-cart tbody");
+		const productTotalPrice = document.getElementById("productTotalPrice");
+		const productResultPrice = document.getElementById("productResultPrice");
+
+		// LocalStorage'dan ürün ID'lerini al
+		let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+		console.log("cartItems:",cartItems);
+
+		// Ürün bilgilerini API'den çek
+		async function fetchProductDetails() { 
+			try {
+				const productDetails = await Promise.all(cartItems.map(async item => { 
+                             
+					const response = await fetch(`https://marwella1.eldenpazar.com/api/products/${item}`, {
+						method: 'GET',
+						headers: {
+							'Authorization': 'Basic ' + btoa('VIMPBUIW3AW519AMKSIY6SRRZUG7YG4E:'),
+							'Accept': 'application/xml'
+						}
+					});
+
+					console.log("response:",response);
+
+					
+
+					if (response.ok) {
+						const data = await response.text(); // XML verisini al
+						const parser = new DOMParser();
+						const xmlDoc = parser.parseFromString(data, "application/xml");
+
+						// Ürün detaylarını ayrıştır
+						return {
+							id: item.id,
+							name: xmlDoc.querySelector("product > name > language").textContent,
+							price: xmlDoc.querySelector("product > price").textContent,
+							image: `https://marwella1.eldenpazar.com/api/images/products/${item.id}/${xmlDoc.querySelector("product > id_default_image").textContent}`,
+							quantity: item.quantity // localStorage'daki miktar
+						};
+					} else {
+						console.error(`Ürün (${item.id}) bilgisi alınamadı.`);
+					}
+				}));
+
+				return productDetails.filter(item => item); // Geçerli ürünleri döndür
+
+
+			} catch (error) {
+				console.error("API Hatası:", error);
+			}
+		}
+
+		// Ürün bilgilerini tabloya ekle
+		async function displayCartProducts() { 
+			const products = await fetchProductDetails();
+			const tableBody = document.querySelector("table.table-cart tbody");
+
+			console.log("products:",products);
+
+			// products.forEach(product => {
+			// 	const row = document.createElement("tr");
+			// 	row.innerHTML = `
+			// 		<td class="product-col">
+			// 			<div class="product">
+			// 				<figure class="product-media">
+			// 					<img src="${product.image}" alt="${product.name}">
+			// 				</figure>
+			// 				<h3 class="product-title">${product.name}</h3>
+			// 			</div>
+			// 		</td>
+			// 		<td class="price-col">${product.price} TL</td>
+			// 		<td class="quantity-col">
+			// 			<input type="number" class="form-control" value="${product.quantity}" min="1">
+			// 		</td>
+			// 		<td class="total-col">${(product.price * product.quantity).toFixed(2)} TL</td>
+			// 		<td class="remove-col">
+			// 			<button class="btn-remove" data-id="${product.id}">X</button>
+			// 		</td>
+			// 	`;
+			// 	tableBody.appendChild(row);
+			// });
+		}
+
+		// Sayfa yüklendiğinde başlat
+		displayCartProducts();
+
+
+		
+
+	});
+</script>
+
 
 </html>
