@@ -1664,6 +1664,7 @@ class Web extends Controller
                         'name' => $productName,
                         'price' => $formattedPrice,
                         'image' => $imageUrl,
+                        'quantity' => 1,
                     ];
 
                 

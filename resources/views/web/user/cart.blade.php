@@ -169,9 +169,6 @@
              
     <!------- Footer - Bottom --->
     @include('web.include.footer-bottom')
-	
-	<!------- Sepetim Listesi JS --->
-	<script src="{{asset('/assets/web')}}/js/user/userCart_List.js"></script>
 
 </body>
 
@@ -187,30 +184,75 @@
 		let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
 		console.log("cartItems:",cartItems);
 
-		// Verileri Laravel'e POST isteği ile gönder
-		fetch('/user/cart/local', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json', // JSON formatında veri gönderiyoruz
-				'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // CSRF token
-			},
-			body: JSON.stringify({ cart: cartItems }) // LocalStorage verisini gönderiyoruz
-		})
-		.then(response => response.json())
-		.then(data => {
-			console.log("Server response:", data); // Gelen cevabı kontrol et
+		updateCartDisplay(); //! Fonksiyon Çalıştırma
 
-			//! Urunleri Listeliyor
-			data.data.forEach((item, index) => {
-				console.log('item:',item);
+		//! Urunleri Listeleme
+		function updateCartDisplay() {
+			cartTableBody.innerHTML = ""; // Önce listeyi temizle
+			let totalCartPrice = 0;
+			
+			// Verileri Laravel'e POST isteği ile gönder
+			fetch('/user/cart/local', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json', // JSON formatında veri gönderiyoruz
+					'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // CSRF token
+				},
+				body: JSON.stringify({ cart: cartItems }) // LocalStorage verisini gönderiyoruz
+			})
+			.then(response => response.json())
+			.then(data => {
+				console.log("Server response:", data); // Gelen cevabı kontrol et
+
+				//! Urunleri Listeliyor
+				data.data.forEach((item, index) => {
+					
+					let row = document.createElement("tr");
+
+					row.innerHTML = `
+						<td class="product-col">
+							<div class="product">
+								<figure class="product-media">
+									<a href="/product/view/${item.id}">
+										<img src="${item.image}" alt="${item.name}">
+									</a>
+								</figure>
+								<h3 class="product-title">
+									<a href="/product/view/${item.id}">${item.name}</a>
+								</h3>
+							</div>
+						</td>
+						<td class="price-col">${item.price} TL </td>
+						<td class="quantity-col">
+							<div class="cart-product-quantity">
+								<input type="number" class="form-control cart-quantity" data-index="${index}" value="${item.quantity}" min="1">
+							</div>
+						</td>
+						<td class="total-col">${(item.price * item.quantity).toFixed(2)} TL </td>
+						<td class="remove-col">
+							<button class="btn-remove" data-index="${index}">
+								<i class="fa fa-close" style="color: red;"></i>
+							</button>
+						</td>
+					`;
+
+					totalCartPrice += item.price * item.quantity;
+					cartTableBody.appendChild(row);	
+					
+				});
+				//! Urunleri Listeliyor Son
+
+				productTotalPrice.innerText = `${totalCartPrice.toFixed(2)} TL`;
+				productResultPrice.innerText = `${totalCartPrice.toFixed(2)} TL`;
+				
+			})
+			.catch(error => {
+				console.error("Error sending data:", error); // Hataları kontrol et
 			});
-			//! Urunleri Listeliyor Son
-		})
-		.catch(error => {
-			console.error("Error sending data:", error); // Hataları kontrol et
-		});
+			
+		}//! Urunleri Listeleme Son
 
-
+		
 		
 
 	});
