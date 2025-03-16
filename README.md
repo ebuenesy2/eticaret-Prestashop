@@ -8,7 +8,6 @@ Bu proje, ürün ve kategori yönetimini kolaylaştıran, kullanıcı dostu bir 
 ## Version Bilgisi
 **Sürüm:** V1.0.0  
 **Geliştirici:** *Ebu Enes Yıldırım*
-
 ---
 
 ## Çalıştırma
@@ -52,8 +51,17 @@ Aşağıdaki özellikler bu proje için tamamlanmıştır:
    - PDF görünümü:
      - Ürün bilgileri (ID, Ad, Fiyat, Miktar, Toplam).
      - Toplam sepet değeri.
-
 ---
+
+## 🔗 URL'ler
+### Ürünler
+- **Tüm Ürünler:** `/tr/product/list`  
+
+### Kategoriler
+- **Tüm Kategoriler:** `/tr/product/category`  
+
+### Sepet
+- **Kullanıcı Sepeti Görüntüleme:** `/tr/user/cart`  
 
 ## Teknolojiler ve Kütüphaneler
 - **Laravel Framework**: Projenin ana altyapısı.
