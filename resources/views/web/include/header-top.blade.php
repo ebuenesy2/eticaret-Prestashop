@@ -26,9 +26,15 @@
                     <li><a href="tel:{{ $DB_HomeSettings->phone }}" class="ff"><i class="fa fa-phone"></i>Ara: {{ $DB_HomeSettings->phone }}</a></li>
                     <li><a href="#">Sipariş Takip</a></li>
                     <li><a href="/@lang('admin.lang')/contact">İletişim</a></li>
-                    
-                   
-                    
+
+                    <li>
+                        <a href="/@lang('admin.lang')/user/cart" class="wishlist-link">
+                            <div class="icon position-relative">
+                                <i class="fa fa-shopping-cart" style="font-size: 15px;" ></i>
+                                <span id="cart-count">0</span>
+                            </div>
+                        </a>
+                    </li>
                   
                 </ul>
             </li>
