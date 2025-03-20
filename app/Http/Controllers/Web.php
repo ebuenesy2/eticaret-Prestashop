@@ -47,28 +47,35 @@ class Web extends Controller
         try {  
 
            
-            $url = "https://marwella1.eldenpazar.com/api/categories";
+            $url_main = "https://marwella1.eldenpazar.com/api/"; //! Site Url
+            $url_main_format = "?output_format=JSON"; //! İstenilen Format
+
+            $url = $url_main."categories".$url_main_format;
             $username = "VIMPBUIW3AW519AMKSIY6SRRZUG7YG4E";  // Prestashop API Key
 
             $response = Http::withBasicAuth($username, '')->accept('application/xml')->get($url);
 
+            //! Json
             if ($response->successful()) {
-                // XML verisini ayrıştır
-                $xml = simplexml_load_string($response->body());
 
-                // Kategori ID’lerini al
+                $return_categories = json_decode($response->body());
+                //echo "<pre>"; print_r($return_categories); die();
+                
                 $categories = [];
-                foreach ($xml->categories->category as $category) {
-                    $categories[] = (string) $category['id'];
+                foreach ($return_categories->categories as $category) {
+                    $categories[] = $category->id;
                 }
 
-                // Sayfalama için parametreler
+                //echo "<pre>"; print_r($categories); die();
+
                 $perPage = 10; // Her sayfada 10 kategori
                 $currentPage = (int) $request->query('page', 1);
                 $offset = ($currentPage - 1) * $perPage;
                 $pagedCategories = array_slice($categories, $offset, $perPage);
+                //echo "<pre>"; print_r($pagedCategories); die();
 
-                // Kategori adlarını al
+
+                   // Kategori adlarını al
                 $categoryData = [];
                 foreach ($pagedCategories as $categoryId) {
                     $detailUrl = "https://marwella1.eldenpazar.com/api/categories/{$categoryId}";
@@ -82,6 +89,9 @@ class Web extends Controller
                     }
                 }
 
+                //echo "<pre>"; print_r($categoryData); die();
+      
+                
                 // Toplam sayfa sayısını hesapla
                 $totalCategories = count($categories);
                 $totalPages = ceil($totalCategories / $perPage);
@@ -90,6 +100,49 @@ class Web extends Controller
             } else {
                 return response()->json(['error' => 'Kategoriler alınamadı!'], $response->status());
             }
+            //! Json Son
+            
+
+            // //! Xml
+            // if ($response->successful()) {
+            //     // XML verisini ayrıştır
+            //     $xml = simplexml_load_string($response->body());
+
+            //     // Kategori ID’lerini al
+            //     $categories = [];
+            //     foreach ($xml->categories->category as $category) {
+            //         $categories[] = (string) $category['id'];
+            //     }
+
+            //     // Sayfalama için parametreler
+            //     $perPage = 10; // Her sayfada 10 kategori
+            //     $currentPage = (int) $request->query('page', 1);
+            //     $offset = ($currentPage - 1) * $perPage;
+            //     $pagedCategories = array_slice($categories, $offset, $perPage);
+
+            //     // Kategori adlarını al
+            //     $categoryData = [];
+            //     foreach ($pagedCategories as $categoryId) {
+            //         $detailUrl = "https://marwella1.eldenpazar.com/api/categories/{$categoryId}";
+            //         $detailResponse = Http::withBasicAuth($username, '')->accept('application/xml')->get($detailUrl);
+
+            //         if ($detailResponse->successful()) {
+            //             $detailXml = simplexml_load_string($detailResponse->body());
+            //             $categoryName = (string) $detailXml->category->name->language;
+
+            //             $categoryData[] = ['id' => $categoryId, 'name' => $categoryName];
+            //         }
+            //     }
+
+            //     // Toplam sayfa sayısını hesapla
+            //     $totalCategories = count($categories);
+            //     $totalPages = ceil($totalCategories / $perPage);
+
+            //     return view('web/test', compact('categoryData', 'currentPage', 'totalPages'));
+            // } else {
+            //     return response()->json(['error' => 'Kategoriler alınamadı!'], $response->status());
+            // }
+            //  //! Xml Son
             
         } 
         catch (\Throwable $th) {  throw $th; }
@@ -269,20 +322,24 @@ class Web extends Controller
 
                                
                 //! Curl - Kategori
-                $url = "https://marwella1.eldenpazar.com/api/categories";
+                $url_main = "https://marwella1.eldenpazar.com/api/"; //! Site Url
+                $url_main_format = "?output_format=JSON"; //! İstenilen Format
+    
+                $url = $url_main."categories".$url_main_format;
                 $username = "VIMPBUIW3AW519AMKSIY6SRRZUG7YG4E";  // Prestashop API Key
     
                 $response = Http::withBasicAuth($username, '')->accept('application/xml')->get($url);
     
                 if ($response->successful()) {
-                    // XML verisini ayrıştır
-                    $xml = simplexml_load_string($response->body());
-    
-                    // Kategori ID’lerini al
+                   
+                    $return_categories = json_decode($response->body());
+                    //echo "<pre>"; print_r($return_categories); die();
+                    
                     $categories = [];
-                    foreach ($xml->categories->category as $category) {
-                        $categories[] = (string) $category['id'];
+                    foreach ($return_categories->categories as $category) {
+                        $categories[] = $category->id;
                     }
+                
     
                     // Sayfalama için parametreler
                     $perPage = 24; // Her sayfada 10 kategori
